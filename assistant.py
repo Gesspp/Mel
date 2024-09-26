@@ -7,7 +7,7 @@ from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 from sound import Sound
 from json import load
-from mouse_keyboard_bot import Bot
+from MouseAndKeyboardBot import Bot
 # from PyQt5 import QtGui
 import win32com.client as w32
 import wmi

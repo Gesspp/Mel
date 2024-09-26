@@ -1,8 +1,15 @@
-from mouse_keyboard_bot import Bot
+from mouse_keyboard_bot import MouseKeyboardBot
+from json import load
 import subprocess
 
 
 class SystemExecutor:
+    def __init__(
+            self, 
+            bot: MouseKeyboardBot
+        ):
+        self.bot = bot
+
     def _open_program(self, program):
         if program not in self.programs.keys():
             self.speak("Я не знаю такой программы. Проверьте файл \"programs.json\"")
@@ -10,14 +17,14 @@ class SystemExecutor:
         self.speak(f"Открываю {program}")
         subprocess.Popen(self.programs[program])
 
-    # def _close_program(self, program):
-    #     if program not in self.programs.keys():
-    #         self.speak("Я не знаю такой программы. Проверьте файл \"programs.json\"")
-    #         return
-    #     self.speak(f"закрываю {program}")
-    #     image = self.return_image(program)
-    #     bot.find(image)
-    #     bot.click()
+    def _close_program(self, program):
+        if program not in self.programs.keys():
+            self.speak("Я не знаю такой программы. Проверьте файл \"programs.json\"")
+            return
+        self.speak(f"закрываю {program}")
+        image = self.return_image(program)
+        self.bot.find(image)
+        self.bot.click()
 
     def _change_volume(self, units: int, is_up: bool=True):
         if is_up:
