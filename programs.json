@@ -2,5 +2,6 @@
     "steam" : "C:/Program Files (x86)/Steam/steam.exe",
     "chrome" : "C:/Program Files/Google/Chrome/Application/chrome.exe",
     "discord" : "C:/Users/nikit/AppData/Local/Discord/Update.exe",
-    "telegram" : "C:/Users/nikit/AppData/Roaming/Telegram Desktop/Telegram.exe"
+    "telegram" : "C:/Users/nikit/AppData/Roaming/Telegram Desktop/Telegram.exe",
+    "word" : "C:/Program Files/Microsoft Office/Office16/WINWORD.exe"
 }

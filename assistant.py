@@ -7,13 +7,29 @@ from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 from sound import Sound
 from json import load
-from MouseAndKeyboardBot import Bot
-import PyQt5 as pq
+from mouse_keyboard_bot import Bot
+# from PyQt5 import QtGui
 import win32com.client as w32
+import wmi
+from yandex_music import Client
+from abc import ABC, abstractmethod
 
+
+class IAssistant(ABC):
+    @abstractmethod
+    def speak(text: str):
+        ...
+
+    @abstractmethod
+    def listen():
+        ...
+
+    @abstractmethod
+    def execute_command(command: str):
+        ...
 
 # Инициализация движка для синтеза речи
-class Assistant:
+class Assistant(IAssistant):
 
     def __init__(
             self, 
@@ -55,12 +71,15 @@ class Assistant:
         if "открой" in command.lower():
             program = " ".join(command.split()[1:])
             self._open_program(program)
+        elif "закрой" in command.lower():
+            program = " ".join(command.split()[1:])
+            self._close_program(program)
         elif "выключи компьютер" in command:
             self.speak("Выключаю компьютер")
             os.system("shutdown now")
         elif "папка" in command:
             self.speak("Открываю домашнюю папку")
-            subprocess.Popen(["xdg-open", os.path.expanduser("~")])  # Открытие домашней директории
+            subprocess.Popen(["xdg-open", os.path.expanduser("~")])
         elif "создай папку" in command:
             self.speak("Как назовем папку?")
             folder_name = self.listen()
@@ -68,8 +87,12 @@ class Assistant:
             os.mkdir(folder_name)
         elif "повысь громкость" in command:
             self._change_volume(command.split()[3], True)
+        elif "создай документ" in command:
+            self.word_new_document()
+        elif "печатай" in command:
+            self.word_print()
         else:
-            self.speak("Команда не распознана")
+            pass
 
     def _open_program(self, program):
         if program not in self.programs.keys():
@@ -77,6 +100,21 @@ class Assistant:
             return
         self.speak(f"Открываю {program}")
         subprocess.Popen(self.programs[program])
+
+    def word_new_document(self):
+        bot.sendTo(1580, 900)
+        bot.click()
+        bot.sendTo(950, 200)
+        bot.click()
+
+    def _close_program(self, program):
+        if program not in self.programs.keys():
+            self.speak("Я не знаю такой программы. Проверьте файл \"programs.json\"")
+            return
+        self.speak(f"закрываю {program}")
+        image = self.return_image(program)
+        bot.find(image)
+        bot.click()
 
     def _change_volume(self, units: int, is_up: bool=True):
         if is_up:
@@ -92,24 +130,29 @@ class Assistant:
             programs = load(file)
             print("Программы загружены!", programs)
             self.programs = programs
-    
-    def isOpen(self, name: str):
-        strComputer = "."
-        objWMI = w32.Dispatch("WbemScripting.SwebLocator")
-        objSWbem = objWMI.ConnectServer(strComputer, "root/cmiv2")
-        colItems = objSWbem.ExecQuery("Select * from Win32_Process")
 
-        for objItem in colItems:
-            if objItem == f"{name}.exe":
-                return True
-            
-        return False
+    def word_print(self):
+        self.speak("говорите текст")
+        text = self.listen()
+        bot.input(text)
 
+    def return_image(self, program):
+        directory = os.fsencode("./images")
+
+        for el in os.listdir(directory):
+            filename = os.fsencode(el)
+            if filename == f"{program[1:]}_close.PNG":
+                return filename
+            else:
+                continue
 
 if __name__ == "__main__":
     engine = pyttsx3.init()
     recognizer = sr.Recognizer()
     assistant = Assistant(engine, recognizer, Sound)
+    bot = Bot(int, int, str)
+    client = Client()
+    client.init()
     # assistant._change_volume(10, False)
     while True:
         assistant.speak("Слушаю")
