@@ -1,15 +1,18 @@
 from assistant import Assistant
 from executors import SystemExecutor
 from mouse_keyboard_bot import MouseKeyboardBot
-from sound import Sound
+from keyboard import Keyboard
+from sound_changer import SoundChanger
 import speech_recognition as sr
 import pyttsx3
 
 
 if __name__ == "__main__":
     bot = MouseKeyboardBot()
-    sys_exec = SystemExecutor(bot)
+    kb = Keyboard()
+    sound = SoundChanger(kb)
+    sys_exec = SystemExecutor(bot, sound)
     engine = pyttsx3.init()
     recognizer = sr.Recognizer()
-    assistant = Assistant(engine, recognizer, Sound, sys_exec)
+    assistant = Assistant(engine, recognizer, sys_exec)
     assistant.start()

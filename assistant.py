@@ -2,27 +2,19 @@ from abc import ABC, abstractmethod
 from executors import SystemExecutor
 import speech_recognition as sr
 import pyttsx3
-from sound import Sound
 from errors import ProgramNotFoundError
-# from ctypes import cast, POINTER
-# from comtypes import CLSCTX_ALL
-# from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
-# from PyQt5 import QtGui
-# import win32com.client as w32
-# import wmi
-# from yandex_music import Client
 
 class IAssistant(ABC):
     @abstractmethod
-    def speak(text: str):
+    def speak(self, text: str):
         ...
 
     @abstractmethod
-    def listen():
+    def listen(self) -> str:
         ...
 
     @abstractmethod
-    def execute_command(command: str):
+    def execute_command(self, command: str):
         ...
 
 # Инициализация движка для синтеза речи
@@ -32,20 +24,18 @@ class Assistant(IAssistant):
             self, 
             engine: pyttsx3.Engine, 
             recognizer: sr.Recognizer,
-            sound: Sound,
             system_executor: SystemExecutor
         ) -> None:
         self.engine = engine
         self.recognizer = recognizer
-        self.Sound = sound
 
         self.system_executor = system_executor
         self._keywords = {
-            "открой" : self._open_program,
-            "закрой" : self._close_program,
-            "выключи" : self._shutdown,
-            "создай": self._create_folder,
-            "громкость" : self._change_volume
+            "открой" : self._open_program, # done
+            "закрой" : self._close_program, # done
+            "выключи" : self._shutdown, # todo
+            "создай": self._create_folder, # done
+            "громкость" : self._set_volume # done
         }
 
     def start(self):
@@ -70,7 +60,7 @@ class Assistant(IAssistant):
             audio = self.recognizer.listen(source)
 
         try:
-            command = self.recognizer.recognize_google(audio, language="ru-RU")
+            command = self.recognizer.recognize_google(audio, language="ru-RU") # type: ignore
             print(f"Вы сказали: {command}")
             return command.lower()
         except sr.UnknownValueError:
@@ -102,16 +92,25 @@ class Assistant(IAssistant):
         self.system_executor.execute("close", program)
         self.speak(f"закрываю {program}")
 
-    def _shutdown(self):
+    def _shutdown(self, command: str):
         self.system_executor.execute("shutdown")
 
-    def _create_folder(self):
-        self.speak("как назовем папку?")
-        folder_name = self.listen()
+    def _create_folder(self, command: str):
+        if len(command.split()) < 3:
+            self.speak("как назовем папку?")
+            folder_name = self.listen()
+        else:
+            folder_name = " ".join(command.split()[2:])
         self.system_executor.execute("create_folder", folder_name)
+        self.speak(f"создал папку {folder_name}")
 
-    def _change_volume(self, command: str):
-        self.system_executor.execute("change_volume", command.split()[3], True)
+    def _set_volume(self, command: str):
+        if len(command.split()) < 2:
+            self.speak("какую громкость поставить?")
+            volume = int(self.listen())
+        else:
+            volume = int(command.split()[1])
+        self.system_executor.execute("set_volume", volume)
     
 
 
