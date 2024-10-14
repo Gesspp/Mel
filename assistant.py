@@ -3,6 +3,7 @@ from executors import SystemExecutor
 import speech_recognition as sr
 import pyttsx3
 from sound import Sound
+from errors import ProgramNotFoundError
 # from ctypes import cast, POINTER
 # from comtypes import CLSCTX_ALL
 # from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
@@ -89,12 +90,17 @@ class Assistant(IAssistant):
         self.speak("Я не знаю такой команды")
 
     def _open_program(self, command: str):
-        program = " ".join(command.split()[1:])
-        self.system_executor.execute("open", program)
+        try:
+            program = " ".join(command.split()[1:])
+            self.system_executor.execute("open", program)
+            self.speak(f"Открываю {program}")
+        except ProgramNotFoundError as e:
+            self.speak(str(e))
 
     def _close_program(self, command: str):
         program = " ".join(command.split()[1:])
         self.system_executor.execute("close", program)
+        self.speak(f"закрываю {program}")
 
     def _shutdown(self):
         self.system_executor.execute("shutdown")

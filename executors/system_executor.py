@@ -1,4 +1,5 @@
 from mouse_keyboard_bot import MouseKeyboardBot
+from errors import ProgramNotFoundError
 from json import load
 import subprocess
 import os
@@ -28,19 +29,13 @@ class SystemExecutor:
 
     def _open_program(self, program: str):
         if program not in self.programs.keys():
-            self.speak("Я не знаю такой программы. Проверьте файл \"programs.json\"")
-            return
-        self.speak(f"Открываю {program}")
+            raise ProgramNotFoundError(program)
         subprocess.Popen(self.programs[program])
 
-    def _close_program(self, program):
+    def _close_program(self, program: str):
         if program not in self.programs.keys():
-            self.speak("Я не знаю такой программы. Проверьте файл \"programs.json\"")
-            return
-        self.speak(f"закрываю {program}")
-        image = self.return_image(program)
-        self.bot.find(image)
-        self.bot.click()
+            raise ProgramNotFoundError(program)
+        os.system(f"taskkill /f /im {program}.exe")
 
     def _change_volume(self, units: int, is_up: bool=True):
         if is_up:
