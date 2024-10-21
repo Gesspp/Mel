@@ -1,11 +1,16 @@
 from docx import Document
 from pathlib import Path
+from errors import DocumentNotOpenError
+import os
 
 
 class WordExecutor:
     def __init__(self):
         self._command_map = {
-            "new_document" : self._word_new_document
+            "new_document" : self._word_new_document,
+            "open_document" : self._open_document,
+            "new_paragraph" : self._word_new_paragraph,
+            "show_document" : self._show_document
         }
 
     def execute(self, command: str, *args):
@@ -20,6 +25,19 @@ class WordExecutor:
         self.doc = Document()
         self.doc.save(self.doc_name)
 
+    def _open_document(self, file_name: str):
+        path = (Path.home() / "Desktop" / f"{file_name}.docx")
+        self.doc_name = str(path)
+        self.doc = Document(str(path))
+
+    def _show_document(self, file_name: str):
+        path = (Path.home() / "Desktop" / f"{file_name}.docx")
+        if not os.path.exists(str(path)):
+            raise DocumentNotOpenError()
+        os.system(f"start {str(path)}")
+
     def _word_new_paragraph(self, text: str):
+        if not self.doc:
+            raise DocumentNotOpenError()
         self.doc.add_paragraph(text)
         self.doc.save(self.doc_name)
