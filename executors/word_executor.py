@@ -1,3 +1,4 @@
+from re import L
 from docx import Document
 from pathlib import Path
 from errors import DocumentNotOpenError
@@ -39,5 +40,32 @@ class WordExecutor:
     def _word_new_paragraph(self, text: str):
         if not self.doc:
             raise DocumentNotOpenError()
-        self.doc.add_paragraph(text)
+        if "курсив" in text:
+            self.doc.add_paragraph(text).italic = True #type: ignore
+        elif "жирный" in text:
+            self.doc.add_paragraph(text).bold = True #type: ignore
+        elif "подчеркнутый" in text:
+            self.doc.add_paragraph(text).underline = True #type: ignore
+        elif "зачеркнутый" in text:
+            self.doc.add_paragraph(text).strike = True #type: ignore
+        else:
+            self.doc.add_paragraph(text)
         self.doc.save(self.doc_name)
+
+    def _new_head(self, text: str):
+        if not self.doc:
+            raise DocumentNotOpenError()
+        self.doc.add_heading(text)
+        self.doc.save(self.doc_name)
+
+    def _set_font(self, text: str):
+        if not self.doc:
+            raise DocumentNotOpenError()
+        self.style = self.doc.styles['Normal']
+        font = style.font.name = text # type: ignore
+
+    def _set_size(self, size: int):
+        if not self.doc:
+            raise DocumentNotOpenError()
+        style = self.doc.styles['Normal']
+        font_size = style.font.size = size # type: ignore
