@@ -242,7 +242,7 @@ class Keyboard:
     VK_PA1 = 0xFD
     VK_OEM_CLEAR = 0xFE
 
-    def keyDown(keyCode):
+    def keyDown(self, keyCode):
         """
         Key down wrapper
         :param keyCode: int
@@ -254,7 +254,7 @@ class Keyboard:
         x = Input( ctypes.c_ulong(1), ii_ )
         SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
 
-    def keyUp(keyCode):
+    def keyUp(self, keyCode):
         """
         Key up wrapper
         :param keyCode: int
@@ -266,13 +266,13 @@ class Keyboard:
         x = Input( ctypes.c_ulong(1), ii_ )
         SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
 
-    def key(keyCode, length = 0):
+    def key(self, keyCode, length = 0):
         """
         Type a key
         :param keyCode: int
         :param length: int
         :return:
         """
-        Keyboard.keyDown(keyCode)
+        self.keyDown(keyCode)
         time.sleep(length)
-        Keyboard.keyUp(keyCode)
+        self.keyUp(keyCode)

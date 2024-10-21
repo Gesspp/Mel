@@ -1,31 +1,20 @@
+from abc import ABC, abstractmethod
+from executors import SystemExecutor, WordExecutor
 import speech_recognition as sr
 import pyttsx3
-import os
-import subprocess
-from ctypes import cast, POINTER
-from comtypes import CLSCTX_ALL
-from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
-from sound import Sound
-from json import load
-from mouse_keyboard_bot import Bot
-# from PyQt5 import QtGui
-import win32com.client as w32
-import wmi
-from yandex_music import Client
-from abc import ABC, abstractmethod
-
+from errors import ProgramNotFoundError
 
 class IAssistant(ABC):
     @abstractmethod
-    def speak(text: str):
+    def speak(self, text: str):
         ...
 
     @abstractmethod
-    def listen():
+    def listen(self) -> str:
         ...
 
     @abstractmethod
-    def execute_command(command: str):
+    def execute_command(self, command: str):
         ...
 
 # Инициализация движка для синтеза речи
@@ -35,12 +24,32 @@ class Assistant(IAssistant):
             self, 
             engine: pyttsx3.Engine, 
             recognizer: sr.Recognizer,
-            sound: Sound
+            system_executor: SystemExecutor,
+            word_executor: WordExecutor
+
         ) -> None:
         self.engine = engine
         self.recognizer = recognizer
-        self.Sound = sound
-        self._load_programs()
+
+        self.system_executor = system_executor
+        self.word_executor = word_executor
+        self._keywords = {
+            "открой" : self._open_program, # done
+            "закрой" : self._close_program, # done
+            "выключи" : self._shutdown, # done
+            "создай папку": self._create_folder, # done
+            "громкость" : self._set_volume, # done
+            "документ" : self._word_new_document,
+        }
+
+    def start(self):
+        while True:
+            self.speak("Слушаю")
+            command = self.listen()
+            if "стоп" in command or "выход" in command or "отдыхай" in command:
+                self.speak("Ушел")
+                return
+            self.execute_command(command)
 
     def speak(self, text):
         """Озвучивание текста"""
@@ -55,7 +64,7 @@ class Assistant(IAssistant):
             audio = self.recognizer.listen(source)
 
         try:
-            command = self.recognizer.recognize_google(audio, language="ru-RU")
+            command = self.recognizer.recognize_google(audio, language="ru-RU") # type: ignore
             print(f"Вы сказали: {command}")
             return command.lower()
         except sr.UnknownValueError:
@@ -65,101 +74,52 @@ class Assistant(IAssistant):
             self.speak("Ошибка подключения к сервису распознавания.")
             return ""
 
-    def execute_command(self, command):
+    def execute_command(self, command: str):
         """Выполнение системной команды"""
         # if "мел" in command or "мяу" in command or "мем" in command:
-        if "открой" in command.lower():
+        for keyword in self._keywords:
+            if keyword in command:
+                self._keywords[keyword](command)
+                return
+        self.speak("Я не знаю такой команды")
+
+    def _open_program(self, command: str):
+        try:
             program = " ".join(command.split()[1:])
-            self._open_program(program)
-        elif "закрой" in command.lower():
-            program = " ".join(command.split()[1:])
-            self._close_program(program)
-        elif "выключи компьютер" in command:
-            self.speak("Выключаю компьютер")
-            os.system("shutdown now")
-        elif "папка" in command:
-            self.speak("Открываю домашнюю папку")
-            subprocess.Popen(["xdg-open", os.path.expanduser("~")])
-        elif "создай папку" in command:
-            self.speak("Как назовем папку?")
-            folder_name = self.listen()
-            self.speak(f"создаю папку {folder_name}")
-            os.mkdir(folder_name)
-        elif "повысь громкость" in command:
-            self._change_volume(command.split()[3], True)
-        elif "создай документ" in command:
-            self.word_new_document()
-        elif "печатай" in command:
-            self.word_print()
-        else:
-            pass
+            self.system_executor.execute("open", program)
+            self.speak(f"Открываю {program}")
+        except ProgramNotFoundError as e:
+            self.speak(str(e))
 
-    def _open_program(self, program):
-        if program not in self.programs.keys():
-            self.speak("Я не знаю такой программы. Проверьте файл \"programs.json\"")
-            return
-        self.speak(f"Открываю {program}")
-        subprocess.Popen(self.programs[program])
-
-    def word_new_document(self):
-        bot.sendTo(1580, 900)
-        bot.click()
-        bot.sendTo(950, 200)
-        bot.click()
-
-    def _close_program(self, program):
-        if program not in self.programs.keys():
-            self.speak("Я не знаю такой программы. Проверьте файл \"programs.json\"")
-            return
+    def _close_program(self, command: str):
+        program = " ".join(command.split()[1:])
+        self.system_executor.execute("close", program)
         self.speak(f"закрываю {program}")
-        image = self.return_image(program)
-        bot.find(image)
-        bot.click()
 
-    def _change_volume(self, units: int, is_up: bool=True):
-        if is_up:
-            self.Sound.volume_set(self.Sound.current_volume() + int(units))
+    def _shutdown(self, command: str):
+        self.system_executor.execute("shutdown")
+
+    def _create_folder(self, command: str):
+        if len(command.split()) < 3:
+            self.speak("как назовем папку?")
+            folder_name = self.listen()
         else:
-            self.Sound.volume_set(self.Sound.current_volume() - int(units))
-        
-    def _set_volume(self, units: int):
-        self.Sound.volume_set(int(units))
+            folder_name = " ".join(command.split()[2:])
+        self.system_executor.execute("create_folder", folder_name)
+        self.speak(f"создал папку {folder_name}")
 
-    def _load_programs(self, config_file: str="programs.json"):
-        with open(config_file, "r") as file:
-            programs = load(file)
-            print("Программы загружены!", programs)
-            self.programs = programs
-
-    def word_print(self):
-        self.speak("говорите текст")
-        text = self.listen()
-        bot.input(text)
-
-    def return_image(self, program):
-        directory = os.fsencode("./images")
-
-        for el in os.listdir(directory):
-            filename = os.fsencode(el)
-            if filename == f"{program[1:]}_close.PNG":
-                return filename
-            else:
-                continue
-
-if __name__ == "__main__":
-    engine = pyttsx3.init()
-    recognizer = sr.Recognizer()
-    assistant = Assistant(engine, recognizer, Sound)
-    bot = Bot(int, int, str)
-    client = Client()
-    client.init()
-    # assistant._change_volume(10, False)
-    while True:
-        assistant.speak("Слушаю")
-        command = assistant.listen()
-        if command != "отдыхай":
-            assistant.execute_command(command)
-        elif "стоп" in command or "выход" in command or "отдыхай" in command:
-            assistant.speak("Ушел")
-            quit()
-            break
+    def _set_volume(self, command: str):
+        if len(command.split()) < 2:
+            self.speak("какую громкость поставить?")
+            volume = int(self.listen())
+        else:
+            volume = int(command.split()[1])
+        self.system_executor.execute("set_volume", volume)
+    
+    def _word_new_document(self, command: str):
+        if len(command.split()) < 3:
+            self.speak("как назовем документ?")
+            file_name = self.listen()
+        else:
+            file_name = " ".join(command.split()[3:])
+        self.word_executor.execute("new_document", file_name)

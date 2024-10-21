@@ -1,16 +1,25 @@
-from mouse_keyboard_bot import MouseKeyboardBot
+from docx import Document
+from pathlib import Path
+
 
 class WordExecutor:
-    def __init__(self, bot: MouseKeyboardBot):
-        self.bot = bot
+    def __init__(self):
+        self._command_map = {
+            "new_document" : self._word_new_document
+        }
 
-    def word_new_document(self):
-        self.bot.sendTo(1580, 900)
-        self.bot.click()
-        self.bot.sendTo(950, 200)
-        self.bot.click()
+    def execute(self, command: str, *args):
+        if command not in self._command_map:
+            raise Exception(f"Команда {command} не найдена")
+        return self._command_map[command](*args)
 
-    def word_print(self):
-        self.speak("говорите текст")
-        text = self.listen()
-        self.bot.input(text)
+
+    def _word_new_document(self, file_name: str):
+        path = (Path.home() / "Desktop" / f"{file_name}.docx")
+        self.doc_name = str(path)
+        self.doc = Document()
+        self.doc.save(self.doc_name)
+
+    def _word_new_paragraph(self, text: str):
+        self.doc.add_paragraph(text)
+        self.doc.save(self.doc_name)
