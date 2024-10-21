@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from executors import SystemExecutor
+from executors import SystemExecutor, WordExecutor
 import speech_recognition as sr
 import pyttsx3
 from errors import ProgramNotFoundError
@@ -24,18 +24,22 @@ class Assistant(IAssistant):
             self, 
             engine: pyttsx3.Engine, 
             recognizer: sr.Recognizer,
-            system_executor: SystemExecutor
+            system_executor: SystemExecutor,
+            word_executor: WordExecutor
+
         ) -> None:
         self.engine = engine
         self.recognizer = recognizer
 
         self.system_executor = system_executor
+        self.word_executor = word_executor
         self._keywords = {
             "открой" : self._open_program, # done
             "закрой" : self._close_program, # done
-            "выключи" : self._shutdown, # todo
-            "создай": self._create_folder, # done
-            "громкость" : self._set_volume # done
+            "выключи" : self._shutdown, # done
+            "создай папку": self._create_folder, # done
+            "громкость" : self._set_volume, # done
+            "документ" : self._word_new_document,
         }
 
     def start(self):
@@ -112,25 +116,10 @@ class Assistant(IAssistant):
             volume = int(command.split()[1])
         self.system_executor.execute("set_volume", volume)
     
-
-
-    # def word_new_document(self):
-    #     bot.sendTo(1580, 900)
-    #     bot.click()
-    #     bot.sendTo(950, 200)
-    #     bot.click()
-
-    # def word_print(self):
-    #     self.speak("говорите текст")
-    #     text = self.listen()
-    #     bot.input(text)
-
-    # def return_image(self, program):
-    #     directory = os.fsencode("./images")
-
-    #     for el in os.listdir(directory):
-    #         filename = os.fsencode(el)
-    #         if filename == f"{program[1:]}_close.PNG":
-    #             return filename
-    #         else:
-    #             continue
+    def _word_new_document(self, command: str):
+        if len(command.split()) < 3:
+            self.speak("как назовем документ?")
+            file_name = self.listen()
+        else:
+            file_name = " ".join(command.split()[3:])
+        self.word_executor.execute("new_document", file_name)

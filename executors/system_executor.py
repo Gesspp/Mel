@@ -8,6 +8,7 @@ import os
 
 
 class SystemExecutor:
+    """Системный исполнитель. Нужен для открытия программ и изменения громкости"""
     def __init__(
             self, 
             bot: MouseKeyboardBot,
