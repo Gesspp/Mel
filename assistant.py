@@ -3,6 +3,8 @@ from executors import SystemExecutor, WordExecutor
 import speech_recognition as sr
 import pyttsx3
 from errors import ProgramNotFoundError
+import vosk
+import pyaudio
 
 class IAssistant(ABC):
     @abstractmethod
@@ -23,7 +25,8 @@ class Assistant(IAssistant):
     def __init__(
             self, 
             engine: pyttsx3.Engine, 
-            recognizer: sr.Recognizer,
+            # recognizer: sr.Recognizer,
+            recognizer: vosk.KaldiRecognizer,
             system_executor: SystemExecutor,
             word_executor: WordExecutor
 
@@ -33,6 +36,17 @@ class Assistant(IAssistant):
 
         self.system_executor = system_executor
         self.word_executor = word_executor
+        self.p = pyaudio.PyAudio()
+        self.stream = self.p.open(
+            input_device_index=0, # Используйте индекс вашего микрофона
+            format=pyaudio.paInt16,
+            channels=1,
+            rate=16000,
+            input=True,
+            frames_per_buffer=4096,
+        )
+
+
         self._keywords = {
             "документ" : self._open_document, 
             "открой" : self._open_program, # done
@@ -57,22 +71,54 @@ class Assistant(IAssistant):
         self.engine.runAndWait()
 
     def listen(self):
-        """Распознавание речи"""
-        with sr.Microphone() as source:
-            print("Слушаю...")
-            self.recognizer.adjust_for_ambient_noise(source)
-            audio = self.recognizer.listen(source)
+        self.stream.start_stream()
+        print("Слушаю...")
 
-        try:
-            command = self.recognizer.recognize_google(audio, language="ru-RU") # type: ignore
-            print(f"Вы сказали: {command}")
-            return command.lower()
-        except sr.UnknownValueError:
-            self.speak("Извините, я не понял.")
-            return ""
-        except sr.RequestError:
-            self.speak("Ошибка подключения к сервису распознавания.")
-            return ""
+        # ОБРАБОТКА ЗВУКА ДОЛЖНА ПРОИСХОДИТЬ В ЦИКЛЕ
+        while True:
+            data = self.stream.read(4096)
+            if len(data) == 0:
+                break
+
+            # Распознавание речи
+            self.recognizer.AcceptWaveform(data)
+            result = self.recognizer.FinalResult()
+            print("final result: ", result)
+      # Проверка, если Vosk вернулся с результатом
+            if result != "":
+                # Проверка, если result - строка
+                if isinstance(result, str):
+                    command = result.strip('"') # Удаление кавычек
+                    print(f"Вы сказали: {command}")
+                    return command.lower()
+                else:
+                    print("Vosk вернул неверный результат") 
+                    return ""
+            else:
+                # Если результата нет - пропускаем итерацию 
+                continue
+
+            # Выход из цикла:
+        self.stream.stop_stream()
+        self.stream.close()
+        self.p.terminate()
+        return ""
+    # def __listen(self):
+    #     with sr.Microphone() as source:
+    #         print("Слушаю...")
+    #         self.recognizer.adjust_for_ambient_noise(source)
+    #         audio = self.recognizer.listen(source)
+
+    #     try:
+    #         command = self.recognizer.recognize_google(audio, language="ru-RU") # type: ignore
+    #         print(f"Вы сказали: {command}")
+    #         return command.lower()
+    #     except sr.UnknownValueError:
+    #         self.speak("Извините, я не понял.")
+    #         return ""
+    #     except sr.RequestError:
+    #         self.speak("Ошибка подключения к сервису распознавания.")
+    #         return ""
 
     def execute_command(self, command: str):
         """Выполнение системной команды"""
