@@ -3,6 +3,10 @@ from executors import SystemExecutor, WordExecutor
 import speech_recognition as sr
 import pyttsx3
 from errors import ProgramNotFoundError
+import simpleaudio as sa
+from time import sleep
+import wave
+import pygame
 
 class IAssistant(ABC):
     @abstractmethod
@@ -30,16 +34,16 @@ class Assistant(IAssistant):
         ) -> None:
         self.engine = engine
         self.recognizer = recognizer
-
+        pygame.mixer.init()
         self.system_executor = system_executor
         self.word_executor = word_executor
         self._keywords = {
+            "документ" : self._open_document, 
             "открой" : self._open_program, # done
             "закрой" : self._close_program, # done
             "выключи" : self._shutdown, # done
             "создай папку": self._create_folder, # done
             "громкость" : self._set_volume, # done
-            "документ" : self._word_new_document,
         }
 
     def start(self):
@@ -58,8 +62,8 @@ class Assistant(IAssistant):
 
     def listen(self):
         """Распознавание речи"""
+        self.play_sound("./sounds/signal.wav")
         with sr.Microphone() as source:
-            print("Слушаю...")
             self.recognizer.adjust_for_ambient_noise(source)
             audio = self.recognizer.listen(source)
 
@@ -81,7 +85,13 @@ class Assistant(IAssistant):
             if keyword in command:
                 self._keywords[keyword](command)
                 return
+        print("")
         self.speak("Я не знаю такой команды")
+
+    def play_sound(self, sound_file="signal.mp3"):
+        pygame.mixer.music.load(sound_file)
+        pygame.mixer.music.play()
+
 
     def _open_program(self, command: str):
         try:
@@ -116,10 +126,31 @@ class Assistant(IAssistant):
             volume = int(command.split()[1])
         self.system_executor.execute("set_volume", volume)
     
-    def _word_new_document(self, command: str):
-        if len(command.split()) < 3:
-            self.speak("как назовем документ?")
+    
+    def _open_document(self, command: str):
+        if "открой" in command:
+            if len(command.split()) < 3:
+                self.speak("как назовем документ?")
+                file_name = self.listen()
+            else:
+                file_name = " ".join(command.split()[2:])
+            self.word_executor.execute("open_document", file_name)
+            self.speak("открываю документ")
+        elif "создай" in command:
+            if len(command.split()) < 3:
+                self.speak("как назовем документ?")
+                file_name = self.listen()
+            else:
+                file_name = " ".join(command.split()[3:])
+            self.word_executor.execute("new_document", file_name)
+            self.speak("создал документ")   
+        elif "напиши" in command:
+            self.speak("Что написать в документ?")
+            text = self.listen()
+            self.word_executor.execute("new_paragraph", text)
+            self.speak("Написал")
+        elif "покажи" in command:
+            self.speak("Какой документ показать?")
             file_name = self.listen()
-        else:
-            file_name = " ".join(command.split()[3:])
-        self.word_executor.execute("new_document", file_name)
+            self.word_executor.execute("show_document", file_name)
+            self.speak("Показал")
