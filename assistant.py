@@ -1,12 +1,10 @@
 from abc import ABC, abstractmethod
-from executors import SystemExecutor, WordExecutor
+from executors import SystemExecutor, WordExecutor, GoogleSearchExecutor
 import speech_recognition as sr
 import pyttsx3
 from errors import ProgramNotFoundError
-import simpleaudio as sa
-from time import sleep
-import wave
 import pygame
+
 
 class IAssistant(ABC):
     @abstractmethod
@@ -29,14 +27,17 @@ class Assistant(IAssistant):
             engine: pyttsx3.Engine, 
             recognizer: sr.Recognizer,
             system_executor: SystemExecutor,
-            word_executor: WordExecutor
+            word_executor: WordExecutor,
+            search_executor: GoogleSearchExecutor
 
         ) -> None:
         self.engine = engine
         self.recognizer = recognizer
         pygame.mixer.init()
+        API = "AIzaSyAGE1U0uBm0oHra1wpoUCDz8iPm8LCFCy4"
         self.system_executor = system_executor
         self.word_executor = word_executor
+        self.search_executor = search_executor
         self._keywords = {
             "документ" : self._open_document, 
             "открой" : self._open_program, # done
@@ -44,6 +45,7 @@ class Assistant(IAssistant):
             "выключи" : self._shutdown, # done
             "создай папку": self._create_folder, # done
             "громкость" : self._set_volume, # done
+            "загугли" : self._search, # todo
         }
 
     def start(self):
@@ -92,6 +94,13 @@ class Assistant(IAssistant):
         pygame.mixer.music.load(sound_file)
         pygame.mixer.music.play()
 
+    def _search(self, command: str):
+        if len(command.split()) < 2:
+            self.speak("что ищем?")
+            query = self.listen()
+        else:
+            query = " ".join(command.split()[1:])
+        self.search_executor.open_search(query)
 
     def _open_program(self, command: str):
         try:
