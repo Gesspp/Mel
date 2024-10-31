@@ -3,6 +3,10 @@ from executors import SystemExecutor, WordExecutor
 import speech_recognition as sr
 import pyttsx3
 from errors import ProgramNotFoundError
+import simpleaudio as sa
+from time import sleep
+import wave
+import pygame
 
 class IAssistant(ABC):
     @abstractmethod
@@ -30,7 +34,7 @@ class Assistant(IAssistant):
         ) -> None:
         self.engine = engine
         self.recognizer = recognizer
-
+        pygame.mixer.init()
         self.system_executor = system_executor
         self.word_executor = word_executor
         self._keywords = {
@@ -58,8 +62,8 @@ class Assistant(IAssistant):
 
     def listen(self):
         """Распознавание речи"""
+        self.play_sound("./sounds/signal.wav")
         with sr.Microphone() as source:
-            print("Слушаю...")
             self.recognizer.adjust_for_ambient_noise(source)
             audio = self.recognizer.listen(source)
 
@@ -83,6 +87,11 @@ class Assistant(IAssistant):
                 return
         print("")
         self.speak("Я не знаю такой команды")
+
+    def play_sound(self, sound_file="signal.mp3"):
+        pygame.mixer.music.load(sound_file)
+        pygame.mixer.music.play()
+
 
     def _open_program(self, command: str):
         try:
