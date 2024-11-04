@@ -39,9 +39,8 @@ class Assistant(IAssistant):
         self.word_executor = word_executor
         self.search_executor = search_executor
         self._keywords = {
-            "открой сайт" : self._open_link, #todo
             "документ" : self._open_document, 
-            "открой" : self._open_program, # done
+            "открой" : self.open_router, # done
             "закрой" : self._close_program, # done
             "выключи" : self._shutdown, # done
             "создай папку": self._create_folder, # done
@@ -90,6 +89,27 @@ class Assistant(IAssistant):
                 return
         print("")
         self.speak("Я не знаю такой команды")
+
+    def open_router(self, command: str):
+        programs = self.system_executor.programs
+        sites = self.search_executor.sites
+        command = command.lower()
+        value = " ".join(command.split()[1:])
+        print(value)
+
+        for program in programs:
+            if value == program:
+                self.system_executor.execute("open", program)
+                self.speak(f"Открываю {program}")
+                return
+        for site in sites:
+            if value == site:
+                self.search_executor.open_link(site)
+                self.speak(f"Открываю {site}")
+                return
+
+        self.speak(f"Я не нашел {value}")
+        
 
     def play_sound(self, sound_file="signal.mp3"):
         pygame.mixer.music.load(sound_file)
