@@ -31,6 +31,7 @@ class SystemExecutor:
         if command not in self._command_map:
             raise Exception(f"Команда {command} не найдена")
         return self._command_map[command](*args)
+    
 
     def _open_program(self, program: str):
         if program not in self.programs.keys():
@@ -52,7 +53,7 @@ class SystemExecutor:
         self.sound_changer.volume_set(units)
 
     def _load_programs(self, config_file: str="programs.json"):
-        with open(config_file, "r") as file:
+        with open(config_file, "r", encoding="utf-8") as file:
             programs = load(file)
             print("Программы загружены!", programs)
             self.programs = programs

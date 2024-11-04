@@ -39,13 +39,14 @@ class Assistant(IAssistant):
         self.word_executor = word_executor
         self.search_executor = search_executor
         self._keywords = {
+            "открой сайт" : self._open_link, #todo
             "документ" : self._open_document, 
             "открой" : self._open_program, # done
             "закрой" : self._close_program, # done
             "выключи" : self._shutdown, # done
             "создай папку": self._create_folder, # done
             "громкость" : self._set_volume, # done
-            "загугли" : self._search, # todo
+            "загугли" : self._search # done
         }
 
     def start(self):
@@ -101,6 +102,14 @@ class Assistant(IAssistant):
         else:
             query = " ".join(command.split()[1:])
         self.search_executor.open_search(query)
+
+    def _open_link(self, command: str):
+        if len(command.split()) < 3:
+            self.speak("какую ссылку открывать?")
+            link = self.listen()
+        else:
+            link = " ".join(command.split()[2:])
+        self.search_executor.open_link(link)
 
     def _open_program(self, command: str):
         try:
