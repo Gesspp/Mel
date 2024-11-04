@@ -45,7 +45,8 @@ class Assistant(IAssistant):
             "выключи" : self._shutdown, # done
             "создай папку": self._create_folder, # done
             "громкость" : self._set_volume, # done
-            "загугли" : self._search # done
+            "загугли" : self._search, # done
+            "найди": self._youtube_search #todo
         }
 
     def start(self):
@@ -109,7 +110,12 @@ class Assistant(IAssistant):
                 return
 
         self.speak(f"Я не нашел {value}")
-        
+
+    def _youtube_search(self, command: str):
+        querry = command.split()[1:]
+        query = " ".join(querry)
+        self.search_executor.youtube_search(query)
+
 
     def play_sound(self, sound_file="signal.mp3"):
         pygame.mixer.music.load(sound_file)

@@ -23,6 +23,10 @@ class GoogleSearchExecutor:
     def open_link(self, link):
         webbrowser.get(using='chrome').open(self.sites[link])
 
+    
+    def youtube_search(self, query):
+        webbrowser.get(using='chrome').open(f"https://www.youtube.com/results?search_query={query}")
+
     def _load_sites(self, config_file: str="sites.json"):
         with open(config_file, "r", encoding="utf-8") as file:
             sites = load(file)
