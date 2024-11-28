@@ -30,7 +30,7 @@ class MouseKeyboardBot:
         return coords
 
 
-mb = MouseKeyboardBot()
-sleep(4)
-mb.find_rounded("./images/youtube_video_lock.PNG")
-mb.click()
+# mb = MouseKeyboardBot()
+# sleep(4)
+# mb.find_rounded("./images/youtube_video_lock.PNG")
+# mb.click()
