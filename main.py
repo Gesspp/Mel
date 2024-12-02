@@ -5,9 +5,10 @@ from keyboard import Keyboard
 from sound_changer import SoundChanger
 import speech_recognition as sr
 import pyttsx3
+import eel
 
 
-if __name__ == "__main__":
+def start_assistant():
     bot = MouseKeyboardBot()
     kb = Keyboard()
     sound = SoundChanger(kb)
@@ -17,4 +18,16 @@ if __name__ == "__main__":
     engine = pyttsx3.init()
     recognizer = sr.Recognizer()
     assistant = Assistant(engine, recognizer, sys_exec, word_exec, srch_exec)
-    assistant.start()
+    return assistant
+
+
+eel.init("client")
+assist = start_assistant()
+
+@eel.expose
+def run_assistant():
+    assist.start()
+
+
+if __name__ == "__main__":
+    eel.start("index.html", size=(800, 600))
