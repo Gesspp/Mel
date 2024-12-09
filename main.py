@@ -29,5 +29,10 @@ def run_assistant():
     assist.start()
 
 
+@eel.expose
+def get_status():
+    assist.get_status()
+
+
 if __name__ == "__main__":
     eel.start("index.html", size=(800, 600))

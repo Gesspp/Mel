@@ -26,6 +26,10 @@ main{
     justify-content: center;
 }
 
+.line1{
+    border-radius: 2px;
+}
+
 .menu-button-div{
     margin: 20px;
 }

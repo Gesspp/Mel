@@ -19,6 +19,14 @@ class IAssistant(ABC):
     def execute_command(self, command: str):
         ...
 
+    @abstractmethod
+    def start(self):
+        ...
+    
+    @abstractmethod
+    def get_status(self) -> dict:
+        ...
+
 # Инициализация движка для синтеза речи
 class Assistant(IAssistant):
 
@@ -33,11 +41,13 @@ class Assistant(IAssistant):
         ) -> None:
         self.engine = engine
         self.recognizer = recognizer
-        pygame.mixer.init()
-        API = "AIzaSyAGE1U0uBm0oHra1wpoUCDz8iPm8LCFCy4"
         self.system_executor = system_executor
         self.word_executor = word_executor
         self.search_executor = search_executor
+
+        self.speaking = False
+        self.listening = False
+
         self._keywords = {
             "документ" : self._open_document, 
             "открой" : self._open_program, # done
@@ -47,6 +57,10 @@ class Assistant(IAssistant):
             "громкость" : self._set_volume, # done
             "загугли" : self._search, # todo
         }
+        pygame.init()
+
+    def get_status(self) -> dict:
+        return {"speaking": self.speaking, "listening": self.listening}
 
     def start(self):
         while True:
@@ -59,26 +73,35 @@ class Assistant(IAssistant):
 
     def speak(self, text):
         """Озвучивание текста"""
-        self.engine.say(text)
-        self.engine.runAndWait()
+        if not self.speaking:
+            self.speaking = True
+            self.engine.say(text)
+            self.engine.runAndWait()
+            self.speaking = False
 
     def listen(self):
         """Распознавание речи"""
-        self.play_sound("./sounds/signal.wav")
-        with sr.Microphone() as source:
-            self.recognizer.adjust_for_ambient_noise(source)
-            audio = self.recognizer.listen(source)
+        if not self.listening:
+            self.listening = True
+            self.play_sound("./sounds/signal.wav")
+            with sr.Microphone() as source:
+                self.recognizer.adjust_for_ambient_noise(source)
+                audio = self.recognizer.listen(source)
 
-        try:
-            command = self.recognizer.recognize_google(audio, language="ru-RU") # type: ignore
-            print(f"Вы сказали: {command}")
-            return command.lower()
-        except sr.UnknownValueError:
-            self.speak("Извините, я не понял.")
-            return ""
-        except sr.RequestError:
-            self.speak("Ошибка подключения к сервису распознавания.")
-            return ""
+            try:
+                command = self.recognizer.recognize_google(audio, language="ru-RU") # type: ignore
+                print(f"Вы сказали: {command}")
+                self.listening = False
+                return command.lower()
+            except sr.UnknownValueError:
+                self.speak("Извините, я не понял.")
+                self.listening = False
+                return ""
+            except sr.RequestError:
+                self.speak("Ошибка подключения к сервису распознавания.")
+                self.listening = False
+                return ""
+        return ""
 
     def execute_command(self, command: str):
         """Выполнение системной команды"""
