@@ -39,7 +39,7 @@
             </button>
         </div>
     </main>
-    <section class="settings-hidden">
+    <section class="settings hidden">
         <h1>Настройки</h1>
         <section class="settings-audio">
             <h2>Звук</h2>
@@ -68,10 +68,13 @@
             </div>
             <button>Добавить комманду</button>
         </section>
-        <div class="add-program-model">
-            <input type="text" placeholder="Название программы">
-            <input type="file" placeholder="Загрузить программу">
-            <button>Добавить</button>
+        <div class="add-program-modal hidden">
+            <div class="close-modal">
+                <span class="close-modal-button">×</span>
+            </div>
+            <input type="text" placeholder="Название программы" class="new-program-name">
+            <input type="file" placeholder="Загрузить программу" class="path_choose">
+            <button class="add-new-program">Добавить</button>
         </div>
     </section>
     <script src="script.js"></script>
