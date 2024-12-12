@@ -63,12 +63,19 @@ class Assistant(IAssistant):
     def get_status(self) -> dict:
         return {"speaking": self.speaking, "listening": self.listening}
 
+    def get_settings(self) -> dict:
+        return {
+            "programs" : self.system_executor.programs,
+            "sites" : self.search_executor.sites
+        }
+
     def start(self):
         while True:
             self.speak("Слушаю")
             command = self.listen()
             if "стоп" in command or "выход" in command or "отдыхай" in command:
                 self.speak("Ушел")
+                exit()
                 return
             self.execute_command(command)
 

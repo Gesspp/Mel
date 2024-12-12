@@ -30,7 +30,11 @@ main{
     border-radius: 2px;
 }
 
-.menu-button-div{
+.hidden{
+    display: none;
+}
+
+.settings-btn{
     margin: 20px;
 }
 
@@ -190,4 +194,62 @@ main{
     align-items: start;
     fill: #00adb5; 
     
+}
+
+.settings-hidden{
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-programs-list, .settings-sites-list{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.settings-programs-item, .settings-sites-item{
+    background-color: #00adb5;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-width: 1px;
+    border-color: #eeeeee;
+    border-radius: 10px;
+    box-shadow: 0 0 5px black;
+    padding: 5px 10px;
+}
+
+.program-name, .site-name{
+    color:#222831;
+    font-weight: 600;
+}
+
+.delete-icon > img, .change-icon > img{
+    width: 20px;
+}
+
+.icons{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+h1, h2{
+    color: #eeeeee;
+}
+
+.add-program > button, .add-site > button{
+    background-color: #00adb5;
+    color: #eeeeee;
+    border-width: 0;
+    border-color: #eeeeee;
+    border-radius: 5px;
+    box-shadow: 0 0 5px black;
+    padding: 5px 10px;
+    color: #222831;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.5s;
+    margin-top: 10px;
 }

@@ -9,7 +9,7 @@
 </head>
 <body>
     <header>
-        <div class="menu-button-div">
+        <div class="settings-btn">
             <svg id="menu-button" enable-background="new 0 0 464.205 464.205" viewBox="0 0 464.205 464.205" xmlns="http://www.w3.org/2000/svg">
                 <g>
                     <g id="grip-solid-horizontal_1_">
@@ -39,6 +39,41 @@
             </button>
         </div>
     </main>
+    <section class="settings-hidden">
+        <h1>Настройки</h1>
+        <section class="settings-audio">
+            <h2>Звук</h2>
+            <h2>Голос</h2>
+        </section>
+        <section class="settings-programs">
+            <h2>Программы</h2>
+            <div class="settings-programs-list">
+
+            </div>
+            <div class="add-program"><button>Добавить</button></div>
+        </section>
+        <section class="settings-sites">
+            <h2>Сайты</h2>
+            <div class="settings-sites-list">
+                
+            </div>
+            <div class="add-site"><button>Добавить</button></div>
+        </section>
+        <section class="supercommands">
+            <h1>Суперкоманды</h1>
+            <div>
+                <h2>Название комманды</h2>
+                <h2>Кнопка чтобы поменять действия</h2>
+                <h2>Кнопка чтобы удалить</h2>
+            </div>
+            <button>Добавить комманду</button>
+        </section>
+        <div class="add-program-model">
+            <input type="text" placeholder="Название программы">
+            <input type="file" placeholder="Загрузить программу">
+            <button>Добавить</button>
+        </div>
+    </section>
     <script src="script.js"></script>
 </body>
 </html>

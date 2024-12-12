@@ -5,7 +5,7 @@ from keyboard import Keyboard
 from sound_changer import SoundChanger
 import speech_recognition as sr
 import pyttsx3
-import eel
+import eel, os
 
 
 def start_assistant():
@@ -25,6 +25,11 @@ eel.init("client")
 assist = start_assistant()
 
 @eel.expose
+def open_settings():
+    eel.start("settings.html", size=(800, 600))
+
+
+@eel.expose
 def run_assistant():
     assist.start()
 
@@ -32,6 +37,11 @@ def run_assistant():
 @eel.expose
 def get_status():
     assist.get_status()
+
+
+@eel.expose
+def get_settings():
+    return assist.get_settings()
 
 
 if __name__ == "__main__":
