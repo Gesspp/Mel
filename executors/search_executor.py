@@ -1,5 +1,5 @@
 import webbrowser
-from json import load
+from json import load, dump
 
 class GoogleSearchExecutor:
     def __init__(
@@ -22,6 +22,12 @@ class GoogleSearchExecutor:
         webbrowser.get(using='chrome').open(search_url)
     def open_link(self, link):
         webbrowser.get(using='chrome').open(self.sites[link])
+
+    def add_sites(self, site_name, site_url, config_file: str="sites.json"):
+        with open(config_file, "a", encoding="utf-8") as file:
+            sites = load(file)
+            dump(sites, file)
+            self.sites = sites
 
     
     def youtube_search(self, query):

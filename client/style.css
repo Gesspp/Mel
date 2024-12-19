@@ -198,7 +198,33 @@ main{
 
 .settings{
     display: flex;
+    flex-direction: row;
+    gap: 30px
+}
+
+.vertical-strip{
+    width: 1px;
+    background-color: #656e79;
+    height: 1433px;
+}
+
+.main-block{
+    width: 40vw;
+    border-width: 10px;
+    border-color: #eeeeee;
+    display: flex;
     flex-direction: column;
+    
+}
+
+.topics{
+    display: flex;
+    flex-direction: column;
+}
+
+.sound-topic, .programs-topic, .sites-topic, .scommands-topic{
+    color: #eeeeee;
+    font-size: 15px;
 }
 
 .settings-programs-list, .settings-sites-list{
@@ -208,6 +234,8 @@ main{
 }
 
 .settings-programs-item, .settings-sites-item{
+    transition: 0.5s;
+    transform: scale3d(1, 1, 1);
     background-color: #00adb5;
     display: flex;
     flex-direction: row;
@@ -218,6 +246,12 @@ main{
     border-radius: 10px;
     box-shadow: 0 0 5px black;
     padding: 5px 10px;
+}
+
+.settings-programs-item:hover, .settings-sites-item:hover{
+    transition: 0.5s;
+    transform: scale3d(1.05, 1.05, 1.05);
+    background-color: #008e96;
 }
 
 .program-name, .site-name{

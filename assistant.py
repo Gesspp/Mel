@@ -6,6 +6,7 @@ from errors import ProgramNotFoundError
 import pygame
 
 
+
 class IAssistant(ABC):
     @abstractmethod
     def speak(self, text: str):
@@ -110,6 +111,18 @@ class Assistant(IAssistant):
                 self.listening = False
                 return ""
         return ""
+
+    def set_volume(self, volume: int):
+        print(volume)
+        self.engine.setProperty("volume", volume)
+
+    def delete_program(self, program_name: str):
+        self.system_executor.remove_program(program_name)
+    def add_program_to_list(self, program_name: str, program_path: str):
+        self.system_executor.add_program(program_name, program_path)
+
+    def add_site_to_list(self, site_name: str, site_url: str):
+        self.search_executor.add_sites(site_name, site_url)
 
     def execute_command(self, command: str):
         """Выполнение системной команды"""

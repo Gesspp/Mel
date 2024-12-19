@@ -40,41 +40,57 @@
         </div>
     </main>
     <section class="settings hidden">
-        <h1>Настройки</h1>
-        <section class="settings-audio">
-            <h2>Звук</h2>
-            <h2>Голос</h2>
-        </section>
-        <section class="settings-programs">
-            <h2>Программы</h2>
-            <div class="settings-programs-list">
-
+        <div class="topics">
+            <p class="sound-topic">Звук</p>
+            <p class="programs-topic">Программы</p>
+            <p class="sites-topic">Сайты</p>
+            <p class="scommands-topic">Суперкоманды</p>
+        </div>
+        <div class="vertical-strip"></div>
+        <div class="main-block">
+            <h1>Настройки</h1>
+            <section class="settings-audio">
+                <h2>Звук</h2>
+                <input type="range" class="volume-slider">
+                <h2>Голос</h2>
+            </section>
+            <section class="settings-programs">
+                <h2>Программы</h2>
+                <div class="settings-programs-list">
+    
+                </div>
+                <div class="add-program"><button>Добавить</button></div>
+            </section>
+            <section class="settings-sites">
+                <h2>Сайты</h2>
+                <div class="settings-sites-list">
+                    
+                </div>
+                <div class="add-site"><button>Добавить</button></div>
+            </section>
+            <section class="supercommands">
+                <h1>Суперкоманды</h1>
+                <div class=settings-scommands-list>
+                    
+                </div>
+                <div class="add-scommand"><button>Добавить</button></div>
+            </section>
+            <div class="add-program-modal hidden">
+                <div class="close-modal">
+                    <span class="close-modal-button">×</span>
+                </div>
+                <input type="text" placeholder="Название программы" class="new-program-name">
+                <input type="text" placeholder="Загрузить программу" class="new-program-path">
+                <button class="add-new-program">Добавить</button>
             </div>
-            <div class="add-program"><button>Добавить</button></div>
-        </section>
-        <section class="settings-sites">
-            <h2>Сайты</h2>
-            <div class="settings-sites-list">
-                
+            <div class="add-site-modal hidden">
+                <div class="close-modal">
+                    <span class="close-modal-button">×</span>
+                </div>
+                <input type="text" placeholder="Название сайта" class="new-site-name">
+                <input type="text" placeholder="Добавить URL" class="URL_input">
+                <button class="add-new-site">Добавить</button>
             </div>
-            <div class="add-site"><button>Добавить</button></div>
-        </section>
-        <section class="supercommands">
-            <h1>Суперкоманды</h1>
-            <div>
-                <h2>Название комманды</h2>
-                <h2>Кнопка чтобы поменять действия</h2>
-                <h2>Кнопка чтобы удалить</h2>
-            </div>
-            <button>Добавить комманду</button>
-        </section>
-        <div class="add-program-modal hidden">
-            <div class="close-modal">
-                <span class="close-modal-button">×</span>
-            </div>
-            <input type="text" placeholder="Название программы" class="new-program-name">
-            <input type="file" placeholder="Загрузить программу" class="path_choose">
-            <button class="add-new-program">Добавить</button>
         </div>
     </section>
     <script src="script.js"></script>

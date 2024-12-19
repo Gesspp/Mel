@@ -7,15 +7,45 @@ const add_program = document.querySelector('.add-program');
 const add_program_modal = document.querySelector('.add-program-modal');
 const settings_btn = document.querySelector('.settings-btn');
 const close_modal_button = document.querySelector('.close-modal-button');
+const add_new_program = document.querySelector('.add-new-program');
+const add_new_site = document.querySelector('.add-new-site');
+const add_site = document.querySelector('.add-site-modal');
+const volume_slider = document.querySelector('.volume-slider');
+
+
 
 async function get_settings() {
     let settings = await eel.get_settings()();
     return settings
 } 
 
+volume_slider.addEventListener('change', function(e) {
+    eel.set_volume(e.currentTarget.value/ 100);
+})
+
 add_program.addEventListener('click', () => {
     add_program_modal.classList.remove('hidden');
 })
+
+add_site.addEventListener('click', () => {
+    add_site_modal.classList.remove('hidden');
+})
+
+add_new_program.addEventListener('click', () => {
+    let program_name = document.querySelector('.new-program-name').value;
+    let program_path = document.querySelector('.new-program-path').value;
+    eel.add_program(program_name, program_path);
+    add_program_modal.classList.add('hidden');
+})
+
+add_new_site.addEventListener('click', () => {
+    let site_name = document.querySelector('.new-site-name').value;
+    let site_url = document.querySelector('.URL_input').value;
+    eel.add_site(site_name, site_url);
+    add_program_modal.classList.add('hidden');
+})
+
+
 
 close_modal_button.addEventListener('click', () => {
     add_program_modal.classList.add('hidden');
@@ -31,8 +61,8 @@ get_settings().then(settings_info => {
                 <p class="program-name">${program}</p>
                 <div class="change-icon">${svgFolderIcon}</div>
                 <div class="icons">
-                    <div class="delete-icon"><img src="images/pen.png" /></div>
-                    <div class="change-icon"><img src="images/bin.png" /></div>
+                    <div class="change-icon"><img src="images/pen.png" /></div>
+                    <div class="delete-icon"><img src="images/bin.png" /></div>
                 </div>
             </div>
         `;
@@ -44,14 +74,34 @@ get_settings().then(settings_info => {
             <div class="settings-sites-item">
                 <p class="site-name">${site}</p>
                 <div class="icons">
-                    <div class="delete-icon"><img src="images/pen.png" /></div>
-                    <div class="change-icon"><img src="images/bin.png" /></div>
+                    <div class="change-icon"><img src="images/pen.png" /></div>
+                    <div class="delete-icon"><img src="images/bin.png" /></div>
                 </div>
             </div>
         `;
         document.querySelector('.settings-sites-list').appendChild(div);
     }
+    for(let sc in settings_info.supercommands){
+        let div = document.createElement('div');
+        div.innerHTML = `
+            <div class="settings-scommands-item">
+                <p class="scommand-name">${sc}</p>
+                <div class="icons">
+                    <div class="change-icon"><img src="images/pen.png" /></div>
+                    <div class="delete-icon"><img src="images/bin.png" /></div>
+                </div>
+            </div>
+        `;
+        document.querySelector('.settings-scommands-list').appendChild(div);
+    }
+    const delete_buttons = document.querySelectorAll('.delete-icon');
+    if(delete_buttons){
+        delete_buttons.forEach(delete_button => delete_button.addEventListener('click', () => {
+            eel.delete_program();
+        }));
+    }
 });
+
 
 settings_btn.addEventListener('click', () => {
     main.classList.toggle('hidden');
