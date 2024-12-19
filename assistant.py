@@ -6,6 +6,7 @@ from errors import ProgramNotFoundError
 import pygame
 
 
+
 class IAssistant(ABC):
     @abstractmethod
     def speak(self, text: str):
@@ -50,17 +51,24 @@ class Assistant(IAssistant):
 
         self._keywords = {
             "документ" : self._open_document, 
-            "открой" : self._open_program, # done
+            "открой" : self.open_router, # done
             "закрой" : self._close_program, # done
             "выключи" : self._shutdown, # done
             "создай папку": self._create_folder, # done
             "громкость" : self._set_volume, # done
-            "загугли" : self._search, # todo
+            "загугли" : self._search, # done
+            "найди": self._youtube_search #todo
         }
         pygame.init()
 
     def get_status(self) -> dict:
         return {"speaking": self.speaking, "listening": self.listening}
+
+    def get_settings(self) -> dict:
+        return {
+            "programs" : self.system_executor.programs,
+            "sites" : self.search_executor.sites
+        }
 
     def start(self):
         while True:
@@ -68,6 +76,7 @@ class Assistant(IAssistant):
             command = self.listen()
             if "стоп" in command or "выход" in command or "отдыхай" in command:
                 self.speak("Ушел")
+                exit()
                 return
             self.execute_command(command)
 
@@ -103,6 +112,18 @@ class Assistant(IAssistant):
                 return ""
         return ""
 
+    def set_volume(self, volume: int):
+        print(volume)
+        self.engine.setProperty("volume", volume)
+
+    def delete_program(self, program_name: str):
+        self.system_executor.remove_program(program_name)
+    def add_program_to_list(self, program_name: str, program_path: str):
+        self.system_executor.add_program(program_name, program_path)
+
+    def add_site_to_list(self, site_name: str, site_url: str):
+        self.search_executor.add_sites(site_name, site_url)
+
     def execute_command(self, command: str):
         """Выполнение системной команды"""
         # if "мел" in command or "мяу" in command or "мем" in command:
@@ -112,6 +133,32 @@ class Assistant(IAssistant):
                 return
         print("")
         self.speak("Я не знаю такой команды")
+
+    def open_router(self, command: str):
+        programs = self.system_executor.programs
+        sites = self.search_executor.sites
+        command = command.lower()
+        value = " ".join(command.split()[1:])
+        print(value)
+
+        for program in programs:
+            if value == program:
+                self.system_executor.execute("open", program)
+                self.speak(f"Открываю {program}")
+                return
+        for site in sites:
+            if value == site:
+                self.search_executor.open_link(site)
+                self.speak(f"Открываю {site}")
+                return
+
+        self.speak(f"Я не нашел {value}")
+
+    def _youtube_search(self, command: str):
+        querry = command.split()[1:]
+        query = " ".join(querry)
+        self.search_executor.youtube_search(query)
+
 
     def play_sound(self, sound_file="signal.mp3"):
         pygame.mixer.music.load(sound_file)
@@ -124,6 +171,14 @@ class Assistant(IAssistant):
         else:
             query = " ".join(command.split()[1:])
         self.search_executor.open_search(query)
+
+    def _open_link(self, command: str):
+        if len(command.split()) < 3:
+            self.speak("какую ссылку открывать?")
+            link = self.listen()
+        else:
+            link = " ".join(command.split()[2:])
+        self.search_executor.open_link(link)
 
     def _open_program(self, command: str):
         try:

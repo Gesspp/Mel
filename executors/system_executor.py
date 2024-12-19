@@ -1,7 +1,7 @@
 from mouse_keyboard_bot import MouseKeyboardBot
 from sound_changer import SoundChanger
 from errors import ProgramNotFoundError
-from json import load
+from json import load, dump
 from pathlib import Path
 import subprocess
 import os
@@ -31,6 +31,7 @@ class SystemExecutor:
         if command not in self._command_map:
             raise Exception(f"Команда {command} не найдена")
         return self._command_map[command](*args)
+    
 
     def _open_program(self, program: str):
         if program not in self.programs.keys():
@@ -42,6 +43,31 @@ class SystemExecutor:
             raise ProgramNotFoundError(program)
         os.system(f"taskkill /f /im {program}.exe")
 
+    def add_program(self, program_name: str, program_path: str, config_file: str="programs.json"):
+        self._load_programs()
+        programs = self.programs
+        if program_name in programs.keys():
+            raise Exception(f"Программа {program_name} уже существует")
+        programs[program_name] = program_path
+        # Добавить проверку на существование файла
+        with open(config_file, "w", encoding="utf-8") as file:
+            dump(programs, file, separators=(",\n", ": "))
+        self._load_programs()
+        print(self.programs)
+        
+
+    def remove_program(self, program_name: str, config_file: str="programs.json"):
+        with open(config_file, "a", encoding="utf-8") as file:
+            programs = load(file)
+            del programs[program_name]
+            self.programs = programs
+
+    def change_path(self, program_name: str, new_path: str, config_file: str="programs.json"):
+        with open(config_file, "a", encoding="utf-8") as file:
+            programs = load(file)
+            programs[program_name] = new_path
+            self.programs = programs
+
     def _change_volume(self, units: int, is_up: bool=True):
         if is_up:
             self.sound_changer.volume_set(self.sound_changer.current_volume() + units)
@@ -52,7 +78,7 @@ class SystemExecutor:
         self.sound_changer.volume_set(units)
 
     def _load_programs(self, config_file: str="programs.json"):
-        with open(config_file, "r") as file:
+        with open(config_file, "r", encoding="utf-8") as file:
             programs = load(file)
             print("Программы загружены!", programs)
             self.programs = programs
