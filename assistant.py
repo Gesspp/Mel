@@ -76,7 +76,6 @@ class Assistant(IAssistant):
             command = self.listen()
             if "стоп" in command or "выход" in command or "отдыхай" in command:
                 self.speak("Ушел")
-                exit()
                 return
             self.execute_command(command)
 
