@@ -53,18 +53,20 @@ class SystemExecutor:
         with open(config_file, "w", encoding="utf-8") as file:
             dump(programs, file, separators=(",\n", ": "))
         self._load_programs()
-        print(self.programs)
         
 
     def remove_program(self, program_name: str, config_file: str="programs.json"):
-        with open(config_file, "a", encoding="utf-8") as file:
+        with open(config_file, "r", encoding="utf-8") as file:
             programs = load(file)
+        with open(config_file, "w", encoding="utf-8") as file:
             del programs[program_name]
-            self.programs = programs
+            dump(programs, file, separators=(",\n", ": "))
+        self._load_programs(config_file)
 
     def change_path(self, program_name: str, new_path: str, config_file: str="programs.json"):
-        with open(config_file, "a", encoding="utf-8") as file:
+        with open(config_file, "r", encoding="utf-8") as file:
             programs = load(file)
+        with open(config_file, "a", encoding="utf-8") as file:
             programs[program_name] = new_path
             self.programs = programs
 
