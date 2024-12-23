@@ -24,10 +24,16 @@ class GoogleSearchExecutor:
         webbrowser.get(using='chrome').open(self.sites[link])
 
     def add_sites(self, site_name, site_url, config_file: str="sites.json"):
-        with open(config_file, "a", encoding="utf-8") as file:
-            sites = load(file)
-            dump(sites, file)
-            self.sites = sites
+        self._load_sites()
+        sites = self.sites
+        if site_name in sites.keys():
+            raise Exception(f"Программа {site_name} уже существует")
+        sites[site_name] = site_url
+        # Добавить проверку на существование файла
+        with open(config_file, "w", encoding="utf-8") as file:
+            dump(sites, file, separators=(",\n", ": "))
+        self._load_sites()
+        print(self.sites)
 
     
     def youtube_search(self, query):
