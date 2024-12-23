@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from executors import SystemExecutor, WordExecutor, GoogleSearchExecutor
 import speech_recognition as sr
+from json import load, dump
 import pyttsx3
 from errors import ProgramNotFoundError
 import pygame
@@ -45,6 +46,7 @@ class Assistant(IAssistant):
         self.system_executor = system_executor
         self.word_executor = word_executor
         self.search_executor = search_executor
+        self._load_scommands("supercommands.json")
 
         self.speaking = False
         self.listening = False
@@ -125,12 +127,16 @@ class Assistant(IAssistant):
 
     def execute_command(self, command: str):
         """Выполнение системной команды"""
+        scommands = self._load_scommands("supercommands.json")
         # if "мел" in command or "мяу" in command or "мем" in command:
         for keyword in self._keywords:
             if keyword in command:
                 self._keywords[keyword](command)
                 return
-        print("")
+        for scm in self.scommands.keys():
+            if scm.lower() in command:
+                self.use_scommand(scm)
+                return
         self.speak("Я не знаю такой команды")
 
     def open_router(self, command: str):
@@ -152,6 +158,21 @@ class Assistant(IAssistant):
                 return
 
         self.speak(f"Я не нашел {value}")
+
+
+    def _load_scommands(self, config_file: str="supercommands.json"):
+        with open(config_file, "r", encoding="utf-8") as file:
+            commands = load(file)
+            print("Суперкоманды загружены!", commands)
+            self.scommands = commands
+
+    def use_scommand(self, command: str):
+        print("Использую команду", command)
+        subcommands = self.scommands[command]
+
+        for subcommand in subcommands:
+            self.execute_command(subcommand)
+        
 
     def _youtube_search(self, command: str):
         querry = command.split()[1:]
