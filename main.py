@@ -52,7 +52,7 @@ def add_site(site_name: str, site_url: str):
     assist.add_site_to_list(site_name, site_url)
 
 @eel.expose
-def change_volume(volume: int):
+def set_volume(volume: int):
     assist.set_volume(volume)
 
 @eel.expose

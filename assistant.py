@@ -114,7 +114,6 @@ class Assistant(IAssistant):
         return ""
 
     def set_volume(self, volume: int):
-        print(volume)
         self.engine.setProperty("volume", volume)
 
     def delete_program(self, program_name: str):

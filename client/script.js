@@ -24,8 +24,8 @@ async function get_settings() {
     return settings
 } 
 
-volume_slider.addEventListener('change', function(e) {
-    eel.set_volume(e.currentTarget.value/ 100);
+volume_slider.addEventListener('input', function(e) {
+    eel.set_volume(e.currentTarget.value / 100)();
 })
 
 add_program.addEventListener('click', () => {
