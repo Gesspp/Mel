@@ -90,7 +90,7 @@ const renderSettings = () => {
                     <p class="site-name">${site}</p>
                     <div class="icons">
                         <div class="change-icon"><img src="images/pen.png" /></div>
-                        <div class="delete-icon"><img src="images/bin.png" /></div>
+                        <div class="delete-icon delete-site"><img src="images/bin.png" /></div>
                     </div>
                 </div>
             `;
@@ -103,18 +103,37 @@ const renderSettings = () => {
                     <p class="scommand-name">${sc}</p>
                     <div class="icons">
                         <div class="change-icon"><img src="images/pen.png" /></div>
-                        <div class="delete-icon"><img src="images/bin.png" /></div>
+                        <div class="delete-icon delete-scommand"><img src="images/bin.png" /></div>
                     </div>
                 </div>
             `;
             document.querySelector('.settings-scommands-list').appendChild(div);
+            
         }
         const delete_program_buttons = document.querySelectorAll('.delete-program');
+        const delete_site_button = document.querySelectorAll('.delete-site');
+        const delete_scommand_button = document.querySelectorAll('.delete-scommand');
         if(delete_program_buttons){
             delete_program_buttons.forEach(delete_program => delete_program.addEventListener('click', () => {
                 const program_name = delete_program.closest('.settings-programs-item').querySelector('.program-name').textContent;
                 console.log("Удаляю программу", program_name);
                 eel.delete_program(program_name);
+                renderSettings();
+            }));
+        }
+        if(delete_site_button){
+            delete_site_button.forEach(delete_site => delete_site.addEventListener('click', () => {
+                const site_name = delete_site.closest('.settings-sites-item').querySelector('.site-name').textContent;
+                console.log("Удаляю сайт", site_name);
+                eel.delete_site(site_name);
+                renderSettings();
+            }));
+        }
+        if(delete_scommand_button){
+            delete_scommand_button.forEach(delete_scommand => delete_scommand.addEventListener('click', () => {
+                const scommand_name = delete_scommand.closest('.settings-scommands-item').querySelector('.scommand-name').textContent;
+                console.log("Удаляю суперкоманду", scommand_name);
+                eel.delete_scommand(scommand_name);
                 renderSettings();
             }));
         }

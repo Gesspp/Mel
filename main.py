@@ -59,5 +59,13 @@ def set_volume(volume: int):
 def delete_program(program_name: str):
     assist.delete_program(program_name)
 
+@eel.expose
+def delete_site(site_name: str):
+    assist.delete_site(site_name)
+
+@eel.expose
+def delete_scommand(scommand_name: str):
+    assist.delete_scommand(scommand_name)
+
 if __name__ == "__main__":
     eel.start("index.html", size=(800, 600))

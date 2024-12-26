@@ -69,7 +69,8 @@ class Assistant(IAssistant):
     def get_settings(self) -> dict:
         return {
             "programs" : self.system_executor.programs,
-            "sites" : self.search_executor.sites
+            "sites" : self.search_executor.sites,
+            "supercommands" : self.scommands
         }
 
     def start(self):
@@ -118,6 +119,16 @@ class Assistant(IAssistant):
 
     def delete_program(self, program_name: str):
         self.system_executor.remove_program(program_name)
+
+    def delete_site(self, site_name: str):
+        self.search_executor.remove_site(site_name)
+
+    def delete_scommand(self, scommand_name: str):
+        self._load_scommands("supercommands.json")
+        del self.scommands[scommand_name]
+        with open("supercommands.json", "w", encoding="utf-8") as file:
+            dump(self.scommands, file, separators=(",\n", ": "))
+
     def add_program_to_list(self, program_name: str, program_path: str):
         self.system_executor.add_program(program_name, program_path)
 

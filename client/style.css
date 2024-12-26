@@ -220,6 +220,8 @@ main{
 .topics{
     display: flex;
     flex-direction: column;
+    position: fixed;
+    left: 20px;
 }
 
 .sound-topic, .programs-topic, .sites-topic, .scommands-topic{
@@ -248,13 +250,55 @@ main{
     padding: 5px 10px;
 }
 
-.settings-programs-item:hover, .settings-sites-item:hover{
+.supercommands{
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-scommands-list{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.add-scommand > button{
+    background-color: #00adb5;
+    color: #eeeeee;
+    border-width: 0;
+    border-color: #eeeeee;
+    border-radius: 5px;
+    box-shadow: 0 0 5px black;
+    padding: 5px 10px;
+    color: #222831;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+
+.settings-scommands-item{
+    transition: 0.5s;
+    transform: scale3d(1, 1, 1);
+    background-color: #00adb5;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-width: 1px;
+    border-color: #eeeeee;
+    border-radius: 10px;
+    box-shadow: 0 0 5px black;
+    padding: 5px 10px;
+}
+
+.settings-programs-item:hover, .settings-sites-item:hover, .settings-scommands-item:hover{
     transition: 0.5s;
     transform: scale3d(1.05, 1.05, 1.05);
     background-color: #008e96;
 }
 
-.program-name, .site-name{
+.program-name, .site-name, .scommand-name{
     color:#222831;
     font-weight: 600;
 }
@@ -267,6 +311,12 @@ main{
     display: flex;
     flex-direction: row;
     gap: 10px;
+}
+
+a, a:link, a:visited, a:hover, a:active{
+    text-decoration: none;
+    color: #eeeeee;
+    cursor: pointer;
 }
 
 h1, h2{

@@ -35,7 +35,14 @@ class GoogleSearchExecutor:
         self._load_sites()
         print(self.sites)
 
-    
+    def remove_site(self, site_name: str, config_file: str="sites.json"):
+        with open(config_file, "r", encoding="utf-8") as file:
+            sites = load(file)
+        with open(config_file, "w", encoding="utf-8") as file:
+            del sites[site_name]
+            dump(sites, file, separators=(",\n", ": "))
+        self._load_sites()
+
     def youtube_search(self, query):
         webbrowser.get(using='chrome').open(f"https://www.youtube.com/results?search_query={query}")
 
