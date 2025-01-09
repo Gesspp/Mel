@@ -15,6 +15,13 @@ const add_site_modal = document.querySelector('.add-site-modal');
 const add_site = document.querySelector('.add-site');
 const close_site_button = document.querySelector('.close-site-button');
 
+const add_new_scommand = document.querySelector('.add-new-scommand');
+const add_scommand_modal = document.querySelector('.add-scommand-modal');
+const add_scommand = document.querySelector('.add-scommand');
+const close_scommand_button = document.querySelector('.close-scommand-button');
+const subcommands_list = document.querySelector('.subcommands');
+const add_subcommand = document.querySelector('.add-new-subcommand');
+
 const volume_slider = document.querySelector('.volume-slider');
 
 
@@ -34,6 +41,10 @@ add_program.addEventListener('click', () => {
 
 add_site.addEventListener('click', () => {
     add_site_modal.classList.remove('hidden');
+})
+
+add_scommand.addEventListener('click', () => {
+    add_scommand_modal.classList.remove('hidden');
 })
 
 add_new_program.addEventListener('click', () => {
@@ -61,6 +72,75 @@ close_program_button.addEventListener('click', () => {
 close_site_button.addEventListener('click', () => {
     add_site_modal.classList.add('hidden');
 })
+
+close_scommand_button.addEventListener('click', () => {
+    add_scommand_modal.classList.add('hidden');
+})
+
+
+const subcommands = [];
+const subcommand_types = [
+    "документ",
+    "открой",
+    "закрой",
+    "выключи",
+    "создай папку",
+    "громкость",
+    "загугли",
+    "найди"
+];
+
+const subcommand_args = [];
+
+const show_subcommand_args = (e) => {
+    e.target.parentElement.querySelector('.program-select').classList.remove('hidden');
+    e.target.parentElement.querySelector('.subcommand-entry').classList.add('hidden');
+}
+const hide_subcommand_args = (e) => {
+    e.target.parentElement.querySelector('.program-select').classList.add('hidden');
+    e.target.parentElement.querySelector('.subcommand-entry').classList.remove('hidden');
+}
+
+add_subcommand.addEventListener('click', () => {
+    const subcommand = document.createElement('div');
+    // Действия
+    const subcommand_select = document.createElement('select');
+    for(let i = 0; i < subcommand_types.length; i++){
+        const option = document.createElement('option');
+        option.value = subcommand_types[i];
+        option.innerHTML = subcommand_types[i];
+        subcommand_select.appendChild(option);
+    }
+    // Аргументы (изначально скрыто)
+    const program_select = document.createElement('select');
+    program_select.classList.add('hidden');
+    program_select.classList.add('program-select');
+    for(let i = 0; i < subcommand_args.length; i++){
+        const option = document.createElement('option');
+        option.value = subcommand_args[i];
+        option.innerHTML = subcommand_args[i];
+        program_select.appendChild(option);
+    }
+    const subcommand_entry = document.createElement('input');
+    subcommand_entry.classList.add('subcommand-entry');
+    subcommand_entry.setAttribute('placeholder', 'Введите название');
+    
+    // Добавление в <div>
+    subcommand.appendChild(subcommand_select);
+    subcommand.appendChild(subcommand_entry);
+    subcommand.appendChild(program_select);
+    // Добавление всей команды
+    add_scommand_modal.querySelector('.subcommands').appendChild(subcommand);
+    subcommand_select.addEventListener('change', function(e) {
+        if (e.target.value == "открой" || e.target.value == "закрой") {
+            show_subcommand_args(e);
+        }
+        else {
+            hide_subcommand_args(e);
+        }
+    })
+})
+
 
 const svgFolderIcon = `<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve"><g><g><path d="M496,108.132H273.456l-72.584-71.256H0v87.256v35.488v299.496c0,8.808,7.2,16.008,16,16.008h480c8.8,0,16-7.2,16-16 V124.132C512,115.332,504.8,108.132,496,108.132z M32,68.868h155.792l39.984,39.256H32V68.868z M480,443.124H32V159.62v-19.488 h448V443.124z"/></g></g></svg>`;
 
@@ -109,6 +189,12 @@ const renderSettings = () => {
             `;
             document.querySelector('.settings-scommands-list').appendChild(div);
             
+        }
+        for(let program in settings_info.programs){
+            subcommand_args.push(program);
+        }
+        for(let sites in settings_info.sites){
+            subcommand_args.push(sites);
         }
         const delete_program_buttons = document.querySelectorAll('.delete-program');
         const delete_site_button = document.querySelectorAll('.delete-site');

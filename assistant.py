@@ -59,7 +59,7 @@ class Assistant(IAssistant):
             "создай папку": self._create_folder, # done
             "громкость" : self._set_volume, # done
             "загугли" : self._search, # done
-            "найди": self._youtube_search #todo
+            "найди": self._youtube_search #done
         }
         pygame.init()
 
