@@ -63,7 +63,20 @@ add_new_site.addEventListener('click', () => {
     renderSettings();
 })
 
-
+add_new_scommand.addEventListener('click', () => {
+    let scommand_name = document.querySelector('.new-scommand-name').value;
+    let subcommands = [];
+    const subcommands_list = Array.from(document.querySelectorAll('.subcommands>div'));
+    for(let i = 0; i < subcommands_list.length; i++){
+        const subcommand = subcommands_list[i].querySelector('.subcommand-select').value;
+        const value = (subcommand === "открой" || subcommand === "закрой" ) ? subcommands_list[i].querySelector('.program-select').value : subcommands_list[i].querySelector('.subcommand-entry').value;
+        subcommands.push(`${subcommand} ${value}`);
+    }
+    console.log(subcommands);
+    eel.add_scommand(scommand_name, subcommands);
+    add_scommand_modal.classList.add('hidden');
+    renderSettings();
+})
 
 close_program_button.addEventListener('click', () => {
     add_program_modal.classList.add('hidden');
@@ -78,7 +91,6 @@ close_scommand_button.addEventListener('click', () => {
 })
 
 
-const subcommands = [];
 const subcommand_types = [
     "документ",
     "открой",
@@ -104,7 +116,9 @@ const hide_subcommand_args = (e) => {
 add_subcommand.addEventListener('click', () => {
     const subcommand = document.createElement('div');
     // Действия
+    const program_select = document.createElement('select');
     const subcommand_select = document.createElement('select');
+    program_select.classList.add('subcommand-select');
     for(let i = 0; i < subcommand_types.length; i++){
         const option = document.createElement('option');
         option.value = subcommand_types[i];
@@ -112,7 +126,6 @@ add_subcommand.addEventListener('click', () => {
         subcommand_select.appendChild(option);
     }
     // Аргументы (изначально скрыто)
-    const program_select = document.createElement('select');
     program_select.classList.add('hidden');
     program_select.classList.add('program-select');
     for(let i = 0; i < subcommand_args.length; i++){

@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from executors import SystemExecutor, WordExecutor, GoogleSearchExecutor
 import speech_recognition as sr
 from json import load, dump
+from typing import List
 import pyttsx3
 from errors import ProgramNotFoundError
 import pygame
@@ -134,6 +135,12 @@ class Assistant(IAssistant):
 
     def add_site_to_list(self, site_name: str, site_url: str):
         self.search_executor.add_sites(site_name, site_url)
+
+    def add_scommand_to_list(self, scommand_name: str, subcommands: List[str]):
+        self._load_scommands("supercommands.json")
+        self.scommands[scommand_name] = subcommands
+        with open("supercommands.json", "w", encoding="utf-8") as file:
+            dump(self.scommands, file, separators=(",\n", ": "))
 
     def execute_command(self, command: str):
         """Выполнение системной команды"""

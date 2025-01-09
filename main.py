@@ -52,6 +52,10 @@ def add_site(site_name: str, site_url: str):
     assist.add_site_to_list(site_name, site_url)
 
 @eel.expose
+def add_scommand(scommand_name: str, subcommands: list):
+    assist.add_scommand_to_list(scommand_name, subcommands)
+
+@eel.expose
 def set_volume(volume: int):
     assist.set_volume(volume)
 
