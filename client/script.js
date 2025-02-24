@@ -9,6 +9,8 @@ const add_program = document.querySelector('.add-program');
 const add_program_modal = document.querySelector('.add-program-modal');
 const close_program_button = document.querySelector('.close-program-button');
 const add_new_program = document.querySelector('.add-new-program');
+const edit_program = document.querySelector('.edit-program');
+const edit_site = document.querySelector('.edit-site')
 
 const add_new_site = document.querySelector('.add-new-site');
 const add_site_modal = document.querySelector('.add-site-modal');
@@ -24,6 +26,8 @@ const add_subcommand = document.querySelector('.add-new-subcommand');
 
 const volume_slider = document.querySelector('.volume-slider');
 
+let old_program_name = ''; 
+
 
 
 async function get_settings() {
@@ -37,14 +41,30 @@ volume_slider.addEventListener('input', function(e) {
 
 add_program.addEventListener('click', () => {
     add_program_modal.classList.remove('hidden');
+    edit_program.classList.add('hidden');
+    add_new_program.classList.remove('hidden');
 })
 
 add_site.addEventListener('click', () => {
     add_site_modal.classList.remove('hidden');
+    edit_site.classList.add('hidden');
+    add_new_site.classList.remove('hidden');
 })
 
 add_scommand.addEventListener('click', () => {
     add_scommand_modal.classList.remove('hidden');
+})
+
+edit_program.addEventListener('click', () => {
+    let program_name = document.querySelector('.new-program-name').value;
+    let program_path = document.querySelector('.new-program-path').value;
+    eel.edit_program(old_program_name, program_name, program_path);
+    add_program_modal.classList.add('hidden');
+    renderSettings();
+})
+
+edit_site.addEventListener('click', () => {
+    let site_name = document.querySelector('.new-site-name').value;
 })
 
 add_new_program.addEventListener('click', () => {
@@ -115,17 +135,15 @@ const hide_subcommand_args = (e) => {
 
 add_subcommand.addEventListener('click', () => {
     const subcommand = document.createElement('div');
-    // Действия
     const program_select = document.createElement('select');
     const subcommand_select = document.createElement('select');
-    program_select.classList.add('subcommand-select');
+    subcommand_select.classList.add('subcommand-select');
     for(let i = 0; i < subcommand_types.length; i++){
         const option = document.createElement('option');
         option.value = subcommand_types[i];
         option.innerHTML = subcommand_types[i];
         subcommand_select.appendChild(option);
     }
-    // Аргументы (изначально скрыто)
     program_select.classList.add('hidden');
     program_select.classList.add('program-select');
     for(let i = 0; i < subcommand_args.length; i++){
@@ -138,11 +156,9 @@ add_subcommand.addEventListener('click', () => {
     subcommand_entry.classList.add('subcommand-entry');
     subcommand_entry.setAttribute('placeholder', 'Введите название');
     
-    // Добавление в <div>
     subcommand.appendChild(subcommand_select);
     subcommand.appendChild(subcommand_entry);
     subcommand.appendChild(program_select);
-    // Добавление всей команды
     add_scommand_modal.querySelector('.subcommands').appendChild(subcommand);
     subcommand_select.addEventListener('change', function(e) {
         if (e.target.value == "открой" || e.target.value == "закрой") {
@@ -169,7 +185,7 @@ const renderSettings = () => {
                     <p class="program-name">${program}</p>
                     <div class="change-icon">${svgFolderIcon}</div>
                     <div class="icons">
-                        <div class="change-icon"><img src="images/pen.png" /></div>
+                        <div class="change-icon change-program"><img src="images/pen.png" /></div>
                         <div class="delete-icon delete-program"><img src="images/bin.png" /></div>
                     </div>
                 </div>
@@ -182,7 +198,7 @@ const renderSettings = () => {
                 <div class="settings-sites-item">
                     <p class="site-name">${site}</p>
                     <div class="icons">
-                        <div class="change-icon"><img src="images/pen.png" /></div>
+                        <div class="change-icon change-site"><img src="images/pen.png" /></div>
                         <div class="delete-icon delete-site"><img src="images/bin.png" /></div>
                     </div>
                 </div>
@@ -195,7 +211,7 @@ const renderSettings = () => {
                 <div class="settings-scommands-item">
                     <p class="scommand-name">${sc}</p>
                     <div class="icons">
-                        <div class="change-icon"><img src="images/pen.png" /></div>
+                        <div class="change-icon change-scommand"><img src="images/pen.png" /></div>
                         <div class="delete-icon delete-scommand"><img src="images/bin.png" /></div>
                     </div>
                 </div>
@@ -232,8 +248,43 @@ const renderSettings = () => {
             delete_scommand_button.forEach(delete_scommand => delete_scommand.addEventListener('click', () => {
                 const scommand_name = delete_scommand.closest('.settings-scommands-item').querySelector('.scommand-name').textContent;
                 console.log("Удаляю суперкоманду", scommand_name);
-                eel.delete_scommand(scommand_name);
+                eel.delete_scommand(scommand_name); //нет двойных скобок потому что не нужен результат выполнения
                 renderSettings();
+            }));
+        }
+        const change_program_button = document.querySelectorAll('.change-program');
+        const change_site_button = document.querySelectorAll('.change-site');
+        const change_scommand_button = document.querySelectorAll('.change-scommand');
+        if(change_program_button){
+            change_program_button.forEach(change_program => change_program.addEventListener('click', () => {
+                const program_name = change_program.closest('.settings-programs-item').querySelector('.program-name').textContent;
+                document.querySelector('.new-program-name').value = program_name;
+                document.querySelector('.new-program-path').value = settings_info.programs[program_name];
+                old_program_name = program_name;
+                add_program_modal.classList.remove('hidden');
+                edit_program.classList.remove('hidden');
+                add_new_program.classList.add('hidden');
+            }));
+        }
+        if(change_site_button){
+            change_site_button.forEach(change_site => change_site.addEventListener('click', () => {
+                const site_name = change_site.closest('.settings-sites-item').querySelector('.site-name').textContent;
+                document.querySelector('.new-site-name').value = site_name;
+                document.querySelector('.URL_input').value = settings_info.sites[site_name];
+                old_site_name = site_name;
+                add_site_modal.classList.remove('hidden');
+                edit_site.classList.remove('hidden');
+                add_new_site.classList.add('hidden');
+            }));
+        }
+        if(change_scommand_button){
+            change_scommand_button.forEach(change_scommand => change_scommand.addEventListener('click', () => {
+                const scommand_name = change_scommand.closest('.settings-scommands-item').querySelector('.scommand-name').textContent;
+                document.querySelector('.new-scommand-name').value = scommand_name;
+                old_scommand_name = scommand_name;
+                add_scommand_modal.classList.remove('hidden');
+                edit_scommand.classList.remove('hidden');
+                add_new_scommand.classList.add('hidden');
             }));
         }
     });

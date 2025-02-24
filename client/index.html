@@ -79,23 +79,31 @@
                 <div class="close-modal">
                     <span class="close-program-button">×</span>
                 </div>
-                <input type="text" placeholder="Название программы" class="new-program-name">
-                <input type="text" placeholder="Загрузить программу" class="new-program-path">
-                <button class="add-new-program">Добавить</button>
+                <input type="text" placeholder="Название программы" class="styled-input new-program-name">
+                <div class="path-choose-div">
+                    <input type="text" placeholder="Загрузить программу" class="styled-input new-program-path">
+                    <div class="folder-icon-space">
+                        <img src="images/folder.png" class="open-folder-icon">
+                    </div>
+                </div>
+                <button class="add-new-program hidden">Добавить</button>
+                <button class="edit-program hidden">Изменить</button>
             </div>
+
             <div class="add-site-modal hidden">
                 <div class="close-modal">
                     <span class="close-site-button">×</span>
                 </div>
-                <input type="text" placeholder="Название сайта" class="new-site-name">
+                <input type="text" placeholder="Название сайта" class="new-site-name styled-input">
                 <input type="text" placeholder="Добавить URL" class="URL_input">
-                <button class="add-new-site">Добавить</button>
+                <button class="add-new-site hidden">Добавить</button>
+                <button class="edit-site hidden">Изменить</button>
             </div>
             <div class="add-scommand-modal hidden">
                 <div class="close-modal">
                     <span class="close-scommand-button">×</span>
                 </div>
-                <input type="text" placeholder="Название суперкоманды" class="new-scommand-name">
+                <input type="text" placeholder="Название суперкоманды" class="new-scommand-name styled-input">
                 <div class="subcommands">
                 </div>
                 <button class="add-new-subcommand">+</button>

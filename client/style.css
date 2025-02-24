@@ -369,7 +369,8 @@ h1, h2{
     margin-top: 10px;
 }
 
-.new-program-name{
+
+.styled-input{
     width: 300px;
     height: 30px;
     border-radius: 5px;
@@ -379,9 +380,36 @@ h1, h2{
     margin-top: 10px;
     padding-left: 10px;
     font-size: 16px;
-    color: #4d5a6e
-
+    color: #4d5a6e;
+    outline: none;
 }
+
+.new-program-path{
+    width: 263px;
+    height: 30px;
+    border-radius: 5px;
+    border-width: 0;
+    border-color: #222831;
+    box-shadow: 0 0 5px black;
+    padding-left: 10px;
+    font-size: 16px;
+    color: #4d5a6e
+}
+
+.URL_input{
+    width: 300px;
+    height: 30px;
+    border-radius: 5px;
+    border-width: 0;
+    border-color: #222831;
+    box-shadow: 0 0 5px black;
+    margin-top: 10px;
+    padding-left: 10px;
+    font-size: 16px;
+    color: #4d5a6e;
+    outline: none;
+}
+
 .path-choose{
     width: 300px;
     height: 30px;
@@ -391,6 +419,45 @@ h1, h2{
     box-shadow: 0 0 5px black;
     margin-top: 10px;
     padding-left: 10px;
+}
+
+.path-choose-div{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+
+.folder-icon-space{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #eeeeee;
+    border-radius: 2px;
+    width: 30px;
+    height: 30px;
+}
+
+.add-new-program, .edit-program, .add-new-site, .add-new-subcommand, .add-new-scommand{
+    background-color: #00adb5;
+    color: #eeeeee;
+    border-width: 0;
+    border-color: #eeeeee;
+    border-radius: 5px;
+    box-shadow: 0 0 5px black;
+    padding: 5px 10px;
+    color: #222831;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.5s;
+    margin-top: 10px;
+    
+}
+
+.open-folder-icon{
+    width: 20px;
+    cursor: pointer;
 }
 
 .close-modal{

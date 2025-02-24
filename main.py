@@ -55,9 +55,6 @@ def add_site(site_name: str, site_url: str):
 def add_scommand(scommand_name: str, subcommands: list):
     assist.add_scommand_to_list(scommand_name, subcommands)
 
-@eel.expose
-def set_volume(volume: int):
-    assist.set_volume(volume)
 
 @eel.expose
 def delete_program(program_name: str):
@@ -70,6 +67,14 @@ def delete_site(site_name: str):
 @eel.expose
 def delete_scommand(scommand_name: str):
     assist.delete_scommand(scommand_name)
+
+@eel.expose
+def edit_program(program_name: str, new_name: str, new_path: str):
+    assist.edit_program(program_name, new_name, new_path)
+
+@eel.expose
+def set_volume(volume: int):
+    assist.set_volume(volume)
 
 if __name__ == "__main__":
     eel.start("index.html", size=(800, 600))

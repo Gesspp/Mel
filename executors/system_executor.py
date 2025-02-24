@@ -49,7 +49,6 @@ class SystemExecutor:
         if program_name in programs.keys():
             raise Exception(f"Программа {program_name} уже существует")
         programs[program_name] = program_path
-        # Добавить проверку на существование файла
         with open(config_file, "w", encoding="utf-8") as file:
             dump(programs, file, separators=(",\n", ": "))
         self._load_programs()
@@ -63,12 +62,20 @@ class SystemExecutor:
             dump(programs, file, separators=(",\n", ": "))
         self._load_programs(config_file)
 
-    def change_path(self, program_name: str, new_path: str, config_file: str="programs.json"):
-        with open(config_file, "r", encoding="utf-8") as file:
+    def edit_program(self, program_name: str, new_name: str, new_path: str, config_file: str="programs.json"):
+        with open (config_file, "r", encoding="utf-8") as file:
             programs = load(file)
-        with open(config_file, "a", encoding="utf-8") as file:
+        print(programs)
+        with open(config_file, "w", encoding="utf-8") as file:
             programs[program_name] = new_path
-            self.programs = programs
+            if program_name != new_name:
+                programs = dict([
+                    (key, value) if key != program_name else (new_name, new_path)
+                    for key, value in programs.items()
+                ])
+            print(programs, "после")
+            dump(programs, file, separators=(",\n", ": "))
+
 
     def _change_volume(self, units: int, is_up: bool=True):
         if is_up:

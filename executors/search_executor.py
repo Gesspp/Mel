@@ -13,11 +13,6 @@ class GoogleSearchExecutor:
         self._load_sites(config_file)
 
     def open_search(self, query):
-        """
-        Открывает Chrome с поисковым запросом в Google.
-
-        :param query: Поисковый запрос.
-        """
         search_url = f"{self.base_url}{query.replace(' ', '+')}"
         webbrowser.get(using='chrome').open(search_url)
     def open_link(self, link):
@@ -29,7 +24,6 @@ class GoogleSearchExecutor:
         if site_name in sites.keys():
             raise Exception(f"Программа {site_name} уже существует")
         sites[site_name] = site_url
-        # Добавить проверку на существование файла
         with open(config_file, "w", encoding="utf-8") as file:
             dump(sites, file, separators=(",\n", ": "))
         self._load_sites()
@@ -42,6 +36,20 @@ class GoogleSearchExecutor:
             del sites[site_name]
             dump(sites, file, separators=(",\n", ": "))
         self._load_sites()
+
+    def edit_site(self, site_name, new_name, site_path, new_path, config_file: str="sites.json"):
+        with open (config_file, "r", encoding="utf-8") as file:
+            sites = load(file)
+        print(sites)
+        with open(config_file, "w", encoding="utf-8") as file:
+            sites[site_name] = new_path
+            if site_name != new_name:
+                sites = dict([
+                    (key, value) if key != site_name else (new_name, new_path)
+                    for key, value in sites.items()
+                ])
+            print(sites, "после")
+            dump(sites, file, separators=(",\n", ": "))
 
     def youtube_search(self, query):
         webbrowser.get(using='chrome').open(f"https://www.youtube.com/results?search_query={query}")

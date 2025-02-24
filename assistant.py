@@ -8,30 +8,7 @@ from errors import ProgramNotFoundError
 import pygame
 
 
-
-class IAssistant(ABC):
-    @abstractmethod
-    def speak(self, text: str):
-        ...
-
-    @abstractmethod
-    def listen(self) -> str:
-        ...
-
-    @abstractmethod
-    def execute_command(self, command: str):
-        ...
-
-    @abstractmethod
-    def start(self):
-        ...
-    
-    @abstractmethod
-    def get_status(self) -> dict:
-        ...
-
-# Инициализация движка для синтеза речи
-class Assistant(IAssistant):
+class Assistant:
 
     def __init__(
             self, 
@@ -84,7 +61,6 @@ class Assistant(IAssistant):
             self.execute_command(command)
 
     def speak(self, text):
-        """Озвучивание текста"""
         if not self.speaking:
             self.speaking = True
             self.engine.say(text)
@@ -92,7 +68,6 @@ class Assistant(IAssistant):
             self.speaking = False
 
     def listen(self):
-        """Распознавание речи"""
         if not self.listening:
             self.listening = True
             self.play_sound("./sounds/signal.wav")
@@ -142,8 +117,10 @@ class Assistant(IAssistant):
         with open("supercommands.json", "w", encoding="utf-8") as file:
             dump(self.scommands, file, separators=(",\n", ": "))
 
+    def edit_program(self, program_name: str, new_name: str, new_path: str):
+        self.system_executor.edit_program(program_name, new_name, new_path)
+
     def execute_command(self, command: str):
-        """Выполнение системной команды"""
         scommands = self._load_scommands("supercommands.json")
         # if "мел" in command or "мяу" in command or "мем" in command:
         for keyword in self._keywords:
