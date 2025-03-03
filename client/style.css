@@ -439,7 +439,7 @@ h1, h2{
     height: 30px;
 }
 
-.add-new-program, .edit-program, .add-new-site, .add-new-subcommand, .add-new-scommand{
+.add-new-program, .edit-program, .add-new-site, .add-new-subcommand, .add-new-scommand, .edit-site{
     background-color: #00adb5;
     color: #eeeeee;
     border-width: 0;
@@ -453,6 +453,39 @@ h1, h2{
     transition: 0.5s;
     margin-top: 10px;
     
+}
+
+.delete-icon{
+
+}
+
+.subcommand-item{
+    width: 310px;
+    height: 30px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 5px;
+    font-weight: 600;
+}
+
+.subcommand-select, .program-select, .site-select{
+    width: 140px;
+    height: 100%;
+    border-radius: 5px;
+    outline: none;
+    box-sizing: border-box;
+    font-weight: 600;
+}
+
+.subcommand-entry{
+    width: 140px;
+    height: 100%;
+    border-radius: 5px;
+    outline: none;
+    box-sizing: border-box;
+    font-weight: 600;
 }
 
 .open-folder-icon{

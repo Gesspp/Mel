@@ -18,6 +18,7 @@ const add_site = document.querySelector('.add-site');
 const close_site_button = document.querySelector('.close-site-button');
 
 const add_new_scommand = document.querySelector('.add-new-scommand');
+const edit_scommand = document.querySelector('.edit-scommand');
 const add_scommand_modal = document.querySelector('.add-scommand-modal');
 const add_scommand = document.querySelector('.add-scommand');
 const close_scommand_button = document.querySelector('.close-scommand-button');
@@ -28,6 +29,7 @@ const volume_slider = document.querySelector('.volume-slider');
 
 let old_program_name = ''; 
 let old_site_name = '';
+let old_scommand_name = '';
 
 
 
@@ -57,7 +59,11 @@ add_site.addEventListener('click', () => {
 })
 
 add_scommand.addEventListener('click', () => {
+    document.querySelector('.new-scommand-name').value = "";
+    subcommands_list.innerHTML = "";
     add_scommand_modal.classList.remove('hidden');
+    edit_scommand.classList.add('hidden');
+    add_new_scommand.classList.remove('hidden');
 })
 
 edit_program.addEventListener('click', () => {
@@ -145,6 +151,7 @@ const hide_subcommand_args = (e) => {
 
 add_subcommand.addEventListener('click', () => {
     const subcommand = document.createElement('div');
+    subcommand.classList.add('subcommand-item');
     const program_select = document.createElement('select');
     const subcommand_select = document.createElement('select');
     subcommand_select.classList.add('subcommand-select');
@@ -294,6 +301,66 @@ const renderSettings = () => {
             change_scommand_button.forEach(change_scommand => change_scommand.addEventListener('click', () => {
                 const scommand_name = change_scommand.closest('.settings-scommands-item').querySelector('.scommand-name').textContent;
                 document.querySelector('.new-scommand-name').value = scommand_name;
+                subcommands_list.innerHTML = "";
+                for(let i = 0; i < settings_info.supercommands[scommand_name].length; i++){
+                    const subcommand = settings_info.supercommands[scommand_name][i];
+                    let subcommand_type = '';
+                    let subcommand_value = '';
+                    if(subcommand.split(' ')[0] === "создай"){
+                        subcommand_type = subcommand.split(' ').slice(0, 2).join(' ');
+                        subcommand_value = subcommand.split(' ').slice(2).join(' ');
+                    }
+                    else{
+                        subcommand_type = subcommand.split(' ')[0];
+                        subcommand_value = subcommand.split(' ')[1];
+                    }
+
+                    const subcommand_div = document.createElement('div');
+                    subcommand_div.classList.add('subcommand-item');
+                    const program_select = document.createElement('select');
+                    const subcommand_select = document.createElement('select');
+                    subcommand_select.classList.add('subcommand-select');
+                    for(let i = 0; i < subcommand_types.length; i++){
+                        const option = document.createElement('option');
+                        option.value = subcommand_types[i];
+                        option.innerHTML = subcommand_types[i];
+                        subcommand_select.appendChild(option);
+                    }
+                    subcommand_select.value = subcommand_type;
+                    program_select.classList.add('program-select');
+                    for(let i = 0; i < subcommand_args.length; i++){
+                        const option = document.createElement('option');
+                        option.value = subcommand_args[i];
+                        option.innerHTML = subcommand_args[i];
+                        program_select.appendChild(option);
+                    }
+                    const subcommand_entry = document.createElement('input');
+                    subcommand_entry.classList.add('subcommand-entry');
+                    subcommand_entry.setAttribute('placeholder', 'Введите название');
+                    if(subcommand_type == "открой" || subcommand_type == "закрой") {
+                        subcommand_entry.classList.add('hidden');
+                        program_select.value = subcommand_value;
+                    }
+                    else{
+                        subcommand_entry.value = subcommand_value;
+                        program_select.classList.add('hidden');
+                    }
+                    
+                    subcommand_div.appendChild(subcommand_select);
+                    subcommand_div.appendChild(subcommand_entry);
+                    subcommand_div.appendChild(program_select);
+                    add_scommand_modal.querySelector('.subcommands').appendChild(subcommand_div);
+                    subcommand_select.addEventListener('change', function(e) {
+                        if (e.target.value == "открой" || e.target.value == "закрой") {
+                            show_subcommand_args(e);
+                        }
+                        else {
+                            hide_subcommand_args(e);
+                        }
+                    });
+                    
+                    subcommands_list.appendChild(subcommand_div);
+                }
                 old_scommand_name = scommand_name;
                 add_scommand_modal.classList.remove('hidden');
                 edit_scommand.classList.remove('hidden');
