@@ -37,7 +37,7 @@ class GoogleSearchExecutor:
             dump(sites, file, separators=(",\n", ": "))
         self._load_sites()
 
-    def edit_site(self, site_name, new_name, site_path, new_path, config_file: str="sites.json"):
+    def edit_site(self, site_name: str, new_name: str, new_path: str, config_file: str="sites.json"):
         with open (config_file, "r", encoding="utf-8") as file:
             sites = load(file)
         print(sites)
@@ -50,6 +50,7 @@ class GoogleSearchExecutor:
                 ])
             print(sites, "после")
             dump(sites, file, separators=(",\n", ": "))
+        self._load_sites()
 
     def youtube_search(self, query):
         webbrowser.get(using='chrome').open(f"https://www.youtube.com/results?search_query={query}")

@@ -73,6 +73,10 @@ def edit_program(program_name: str, new_name: str, new_path: str):
     assist.edit_program(program_name, new_name, new_path)
 
 @eel.expose
+def edit_site(site_name: str, new_name: str, new_path: str):
+    assist.edit_site(site_name, new_name, new_path)
+
+@eel.expose
 def set_volume(volume: int):
     assist.set_volume(volume)
 

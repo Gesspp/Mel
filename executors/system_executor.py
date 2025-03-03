@@ -75,6 +75,7 @@ class SystemExecutor:
                 ])
             print(programs, "после")
             dump(programs, file, separators=(",\n", ": "))
+        self._load_programs()
 
 
     def _change_volume(self, units: int, is_up: bool=True):

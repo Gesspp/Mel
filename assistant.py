@@ -120,6 +120,9 @@ class Assistant:
     def edit_program(self, program_name: str, new_name: str, new_path: str):
         self.system_executor.edit_program(program_name, new_name, new_path)
 
+    def edit_site(self, site_name: str, new_name: str, new_url: str):
+        self.search_executor.edit_site(site_name, new_name, new_url)
+
     def execute_command(self, command: str):
         scommands = self._load_scommands("supercommands.json")
         # if "мел" in command or "мяу" in command or "мем" in command:
