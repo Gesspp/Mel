@@ -345,10 +345,15 @@ const renderSettings = () => {
                         subcommand_entry.value = subcommand_value;
                         program_select.classList.add('hidden');
                     }
-                    
+                    const delete_subcommand = document.createElement('span');
+                    delete_subcommand.classList.add('delete-subcommand');
+                    delete_subcommand.textContent = '×';
+
+
                     subcommand_div.appendChild(subcommand_select);
                     subcommand_div.appendChild(subcommand_entry);
                     subcommand_div.appendChild(program_select);
+                    subcommand_div.appendChild(delete_subcommand);
                     add_scommand_modal.querySelector('.subcommands').appendChild(subcommand_div);
                     subcommand_select.addEventListener('change', function(e) {
                         if (e.target.value == "открой" || e.target.value == "закрой") {

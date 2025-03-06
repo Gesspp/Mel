@@ -353,6 +353,9 @@ h1, h2{
     align-items: center;
     justify-content: space-around;
 }
+.add-scommand-modal{
+    height: auto !important;
+}
 
 .add-new-subcommand{
     background-color: #00adb5;
@@ -455,8 +458,9 @@ h1, h2{
     
 }
 
-.delete-icon{
-
+.delete-subcommand{
+    color:white;
+    cursor: pointer;
 }
 
 .subcommand-item{

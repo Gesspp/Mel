@@ -1,14 +1,16 @@
 import pyautogui as pa
 from time import sleep
+from pyperclip import copy
 import pyscreeze
 
 class MouseKeyboardBot: 
     
     def sendTo(self, x, y):
-        pa.moveTo(x, y, duration=0)
+        pa.moveTo(x, y, duration=0.5)
 
     def input(self, text):
-        pa.write(text)
+        copy(text)
+        pa.hotkey('ctrl', 'v')
 
     def click(self):
         pa.click()
