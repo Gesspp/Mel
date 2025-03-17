@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from executors import SystemExecutor, WordExecutor, GoogleSearchExecutor
+from executors import SystemExecutor, WordExecutor, GoogleSearchExecutor, TelegramExecutor, SteamExecutor
 import speech_recognition as sr
 from json import load, dump
 from typing import List
@@ -16,14 +16,17 @@ class Assistant:
             recognizer: sr.Recognizer,
             system_executor: SystemExecutor,
             word_executor: WordExecutor,
-            search_executor: GoogleSearchExecutor
-
+            search_executor: GoogleSearchExecutor,
+            telegram_executor: TelegramExecutor,
+            steam_executor: SteamExecutor
         ) -> None:
         self.engine = engine
         self.recognizer = recognizer
         self.system_executor = system_executor
         self.word_executor = word_executor
         self.search_executor = search_executor
+        self.telegram_executor = telegram_executor
+        self.steam_executor = steam_executor
         self._load_scommands("supercommands.json")
 
         self.speaking = False
@@ -37,7 +40,8 @@ class Assistant:
             "создай папку": self._create_folder, # done
             "громкость" : self._set_volume, # done
             "загугли" : self._search, # done
-            "найди": self._youtube_search #done
+            "найди": self._youtube_search, #done
+            "напиши": self._telegram_write, #done
         }
         pygame.init()
 
@@ -69,12 +73,12 @@ class Assistant:
 
     def listen(self):
         if not self.listening:
+            print("Слушаю")
             self.listening = True
             self.play_sound("./sounds/signal.wav")
             with sr.Microphone() as source:
                 self.recognizer.adjust_for_ambient_noise(source)
                 audio = self.recognizer.listen(source)
-
             try:
                 command = self.recognizer.recognize_google(audio, language="ru-RU") # type: ignore
                 print(f"Вы сказали: {command}")
@@ -89,6 +93,12 @@ class Assistant:
                 self.listening = False
                 return ""
         return ""
+    
+    def _telegram_write(self, command: str):
+        self.system_executor.execute("open", "telegram")
+        getter = command.split()[-1]
+        message = " ".join(command.split()[1:-1])
+        self.telegram_executor.send_message_to(getter, message)
 
     def set_volume(self, volume: int):
         self.engine.setProperty("volume", volume)

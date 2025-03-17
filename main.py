@@ -1,7 +1,7 @@
 from assistant import Assistant
-from executors import SystemExecutor, WordExecutor, GoogleSearchExecutor
+from executors import *
 from mouse_keyboard_bot import MouseKeyboardBot
-from keyboard import Keyboard
+from o_keyboard import Keyboard
 from sound_changer import SoundChanger
 import speech_recognition as sr
 import pyttsx3
@@ -15,9 +15,11 @@ def start_assistant():
     sys_exec = SystemExecutor(bot, sound)
     word_exec = WordExecutor()
     srch_exec = GoogleSearchExecutor()
+    tg_exec = TelegramExecutor(bot)
+    steam_exec = SteamExecutor(bot)
     engine = pyttsx3.init()
     recognizer = sr.Recognizer()
-    assistant = Assistant(engine, recognizer, sys_exec, word_exec, srch_exec)
+    assistant = Assistant(engine, recognizer, sys_exec, word_exec, srch_exec, tg_exec, steam_exec)
     return assistant
 
 
