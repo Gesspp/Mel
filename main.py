@@ -82,5 +82,9 @@ def edit_site(site_name: str, new_name: str, new_path: str):
 def set_volume(volume: int):
     assist.set_volume(volume)
 
+@eel.expose
+def check_empty_settings():
+    return assist.check_empty_settings()
+
 if __name__ == "__main__":
     eel.start("index.html", size=(800, 600))

@@ -88,6 +88,9 @@ class SystemExecutor:
         self.sound_changer.volume_set(units)
 
     def _load_programs(self, config_file: str="programs.json"):
+        if not os.path.exists(config_file):
+            with open(config_file, "w", encoding="utf-8") as file:
+                dump({}, file, separators=(",\n", ": "))
         with open(config_file, "r", encoding="utf-8") as file:
             programs = load(file)
             print("Программы загружены!", programs)

@@ -1,5 +1,7 @@
 import webbrowser
 from json import load, dump
+import os
+
 
 class GoogleSearchExecutor:
     def __init__(
@@ -56,6 +58,9 @@ class GoogleSearchExecutor:
         webbrowser.get(using='chrome').open(f"https://www.youtube.com/results?search_query={query}")
 
     def _load_sites(self, config_file: str="sites.json"):
+        if not os.path.exists(config_file):
+            with open(config_file, "w", encoding="utf-8") as file:
+                dump({}, file, separators=(",\n", ": "))
         with open(config_file, "r", encoding="utf-8") as file:
             sites = load(file)
             print("сайты загружены!", sites)

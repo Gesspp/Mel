@@ -381,3 +381,5 @@ settings_btn.addEventListener('click', () => {
     main.classList.toggle('hidden');
     settings.classList.toggle('hidden');
 });
+
+const check_empty_files = () => eel.check_empty_files()();

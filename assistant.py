@@ -5,7 +5,8 @@ from json import load, dump
 from typing import List
 import pyttsx3
 from errors import ProgramNotFoundError
-import pygame
+import pygame, os
+from utils import get_path
 
 
 class Assistant:
@@ -28,7 +29,7 @@ class Assistant:
         self.telegram_executor = telegram_executor
         self.steam_executor = steam_executor
         self._load_scommands("supercommands.json")
-
+    
         self.speaking = False
         self.listening = False
 
@@ -168,6 +169,9 @@ class Assistant:
 
 
     def _load_scommands(self, config_file: str="supercommands.json"):
+        if not os.path.exists(config_file):
+            with open(config_file, "w", encoding="utf-8") as file:
+                dump({}, file, separators=(",\n", ": "))
         with open(config_file, "r", encoding="utf-8") as file:
             commands = load(file)
             print("Суперкоманды загружены!", commands)
@@ -188,6 +192,7 @@ class Assistant:
 
 
     def play_sound(self, sound_file="signal.mp3"):
+        sound_file = get_path(sound_file)
         pygame.mixer.music.load(sound_file)
         pygame.mixer.music.play()
 
@@ -268,3 +273,16 @@ class Assistant:
             file_name = self.listen()
             self.word_executor.execute("show_document", file_name)
             self.speak("Показал")
+
+
+    def check_empty_settings(self):
+        """Возвращает True, если в файле настроек нет ни одной программы или сайта"""
+        return (len(self.system_executor.programs) == 0 and len(self.search_executor.sites) == 0)
+    
+
+
+
+if __name__ == "__main__":
+    
+    model = whisper.load_model("base")
+    print(model.transcribe("voice.wav"))
