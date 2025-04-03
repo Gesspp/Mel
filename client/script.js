@@ -83,6 +83,21 @@ edit_site.addEventListener('click', () => {
     renderSettings();
 })
 
+edit_scommand.addEventListener('click', () => {
+    let scommand_name = document.querySelector('.new-scommand-name').value;
+    let subcommands = [];
+    const subcommands_list = Array.from(document.querySelectorAll('.subcommands>div'));
+    for(let i = 0; i < subcommands_list.length; i++){
+        const subcommand = subcommands_list[i].querySelector('.subcommand-select').value;
+        const value = (subcommand === "открой" || subcommand === "закрой" ) ? subcommands_list[i].querySelector('.program-select').value : subcommands_list[i].querySelector('.subcommand-entry').value;
+        subcommands.push(`${subcommand} ${value}`);
+    }
+    console.log(old_scommand_name, scommand_name, subcommands);
+    eel.edit_scommand(old_scommand_name, scommand_name, subcommands);
+    add_scommand_modal.classList.add('hidden');
+    renderSettings();
+})
+
 add_new_program.addEventListener('click', () => {
     let program_name = document.querySelector('.new-program-name').value;
     let program_path = document.querySelector('.new-program-path').value;
@@ -108,7 +123,6 @@ add_new_scommand.addEventListener('click', () => {
         const value = (subcommand === "открой" || subcommand === "закрой" ) ? subcommands_list[i].querySelector('.program-select').value : subcommands_list[i].querySelector('.subcommand-entry').value;
         subcommands.push(`${subcommand} ${value}`);
     }
-    console.log(subcommands);
     eel.add_scommand(scommand_name, subcommands);
     add_scommand_modal.classList.add('hidden');
     renderSettings();
@@ -172,10 +186,15 @@ add_subcommand.addEventListener('click', () => {
     const subcommand_entry = document.createElement('input');
     subcommand_entry.classList.add('subcommand-entry');
     subcommand_entry.setAttribute('placeholder', 'Введите название');
-    
+
+    const delete_subcommand = document.createElement('span');
+    delete_subcommand.classList.add('delete-subcommand');
+    delete_subcommand.textContent = '×';
+
     subcommand.appendChild(subcommand_select);
     subcommand.appendChild(subcommand_entry);
     subcommand.appendChild(program_select);
+    subcommand.appendChild(delete_subcommand);
     add_scommand_modal.querySelector('.subcommands').appendChild(subcommand);
     subcommand_select.addEventListener('change', function(e) {
         if (e.target.value == "открой" || e.target.value == "закрой") {
@@ -348,8 +367,6 @@ const renderSettings = () => {
                     const delete_subcommand = document.createElement('span');
                     delete_subcommand.classList.add('delete-subcommand');
                     delete_subcommand.textContent = '×';
-
-
                     subcommand_div.appendChild(subcommand_select);
                     subcommand_div.appendChild(subcommand_entry);
                     subcommand_div.appendChild(program_select);

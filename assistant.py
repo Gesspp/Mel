@@ -134,6 +134,14 @@ class Assistant:
     def edit_site(self, site_name: str, new_name: str, new_url: str):
         self.search_executor.edit_site(site_name, new_name, new_url)
 
+    def edit_scommand(self, scommand_name: str, new_name: str, new_subcommands: List[str]):
+        self._load_scommands("supercommands.json")
+        self.scommands[new_name] = new_subcommands
+        if scommand_name != new_name:
+            del self.scommands[scommand_name]
+        with open("supercommands.json", "w", encoding="utf-8") as file:
+            dump(self.scommands, file, separators=(",\n", ": "))
+
     def execute_command(self, command: str):
         scommands = self._load_scommands("supercommands.json")
         # if "мел" in command or "мяу" in command or "мем" in command:

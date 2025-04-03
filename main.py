@@ -79,6 +79,10 @@ def edit_site(site_name: str, new_name: str, new_path: str):
     assist.edit_site(site_name, new_name, new_path)
 
 @eel.expose
+def edit_scommand(scommand_name: str, new_name: str, new_subcommands: list):
+    assist.edit_scommand(scommand_name, new_name, new_subcommands)
+
+@eel.expose
 def set_volume(volume: int):
     assist.set_volume(volume)
 
