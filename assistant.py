@@ -279,10 +279,3 @@ class Assistant:
         """Возвращает True, если в файле настроек нет ни одной программы или сайта"""
         return (len(self.system_executor.programs) == 0 and len(self.search_executor.sites) == 0)
     
-
-
-
-if __name__ == "__main__":
-    
-    model = whisper.load_model("base")
-    print(model.transcribe("voice.wav"))
