@@ -203,6 +203,11 @@ add_subcommand.addEventListener('click', () => {
         else {
             hide_subcommand_args(e);
         }
+
+    })
+    delete_subcommand.addEventListener('click', () => {
+        add_scommand_modal.querySelector('.subcommands').removeChild(subcommand_div);
+        settings_info.supercommands[scommand_name].splice(settings_info.supercommands[scommand_name].indexOf(subcommand), 1);
     })
 })
 
@@ -380,7 +385,10 @@ const renderSettings = () => {
                             hide_subcommand_args(e);
                         }
                     });
-                    
+                    delete_subcommand.addEventListener('click', () => {
+                        add_scommand_modal.querySelector('.subcommands').removeChild(subcommand_div);
+                        settings_info.supercommands[scommand_name].splice(settings_info.supercommands[scommand_name].indexOf(subcommand), 1);
+                    })
                     subcommands_list.appendChild(subcommand_div);
                 }
                 old_scommand_name = scommand_name;
