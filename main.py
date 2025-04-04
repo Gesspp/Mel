@@ -1,7 +1,7 @@
 from assistant import Assistant
-from executors import SystemExecutor, WordExecutor, GoogleSearchExecutor
+from executors import *
 from mouse_keyboard_bot import MouseKeyboardBot
-from keyboard import Keyboard
+from o_keyboard import Keyboard
 from sound_changer import SoundChanger
 import speech_recognition as sr
 import pyttsx3
@@ -15,9 +15,11 @@ def start_assistant():
     sys_exec = SystemExecutor(bot, sound)
     word_exec = WordExecutor()
     srch_exec = GoogleSearchExecutor()
+    tg_exec = TelegramExecutor(bot)
+    steam_exec = SteamExecutor(bot)
     engine = pyttsx3.init()
     recognizer = sr.Recognizer()
-    assistant = Assistant(engine, recognizer, sys_exec, word_exec, srch_exec)
+    assistant = Assistant(engine, recognizer, sys_exec, word_exec, srch_exec, tg_exec, steam_exec)
     return assistant
 
 
@@ -52,12 +54,41 @@ def add_site(site_name: str, site_url: str):
     assist.add_site_to_list(site_name, site_url)
 
 @eel.expose
-def change_volume(volume: int):
-    assist.set_volume(volume)
+def add_scommand(scommand_name: str, subcommands: list):
+    assist.add_scommand_to_list(scommand_name, subcommands)
+
 
 @eel.expose
 def delete_program(program_name: str):
     assist.delete_program(program_name)
+
+@eel.expose
+def delete_site(site_name: str):
+    assist.delete_site(site_name)
+
+@eel.expose
+def delete_scommand(scommand_name: str):
+    assist.delete_scommand(scommand_name)
+
+@eel.expose
+def edit_program(program_name: str, new_name: str, new_path: str):
+    assist.edit_program(program_name, new_name, new_path)
+
+@eel.expose
+def edit_site(site_name: str, new_name: str, new_path: str):
+    assist.edit_site(site_name, new_name, new_path)
+
+@eel.expose
+def edit_scommand(scommand_name: str, new_name: str, new_subcommands: list):
+    assist.edit_scommand(scommand_name, new_name, new_subcommands)
+
+@eel.expose
+def set_volume(volume: int):
+    assist.set_volume(volume)
+
+@eel.expose
+def check_empty_settings():
+    return assist.check_empty_settings()
 
 if __name__ == "__main__":
     eel.start("index.html", size=(800, 600))

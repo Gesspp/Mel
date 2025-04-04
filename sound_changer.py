@@ -1,4 +1,4 @@
-from keyboard import Keyboard
+from o_keyboard import Keyboard
 
 
 class SoundChanger:

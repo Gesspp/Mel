@@ -1,5 +1,7 @@
 import webbrowser
 from json import load, dump
+import os
+
 
 class GoogleSearchExecutor:
     def __init__(
@@ -13,11 +15,6 @@ class GoogleSearchExecutor:
         self._load_sites(config_file)
 
     def open_search(self, query):
-        """
-        Открывает Chrome с поисковым запросом в Google.
-
-        :param query: Поисковый запрос.
-        """
         search_url = f"{self.base_url}{query.replace(' ', '+')}"
         webbrowser.get(using='chrome').open(search_url)
     def open_link(self, link):
@@ -29,17 +26,41 @@ class GoogleSearchExecutor:
         if site_name in sites.keys():
             raise Exception(f"Программа {site_name} уже существует")
         sites[site_name] = site_url
-        # Добавить проверку на существование файла
         with open(config_file, "w", encoding="utf-8") as file:
             dump(sites, file, separators=(",\n", ": "))
         self._load_sites()
         print(self.sites)
 
-    
+    def remove_site(self, site_name: str, config_file: str="sites.json"):
+        with open(config_file, "r", encoding="utf-8") as file:
+            sites = load(file)
+        with open(config_file, "w", encoding="utf-8") as file:
+            del sites[site_name]
+            dump(sites, file, separators=(",\n", ": "))
+        self._load_sites()
+
+    def edit_site(self, site_name: str, new_name: str, new_path: str, config_file: str="sites.json"):
+        with open (config_file, "r", encoding="utf-8") as file:
+            sites = load(file)
+        print(sites)
+        with open(config_file, "w", encoding="utf-8") as file:
+            sites[site_name] = new_path
+            if site_name != new_name:
+                sites = dict([
+                    (key, value) if key != site_name else (new_name, new_path)
+                    for key, value in sites.items()
+                ])
+            print(sites, "после")
+            dump(sites, file, separators=(",\n", ": "))
+        self._load_sites()
+
     def youtube_search(self, query):
         webbrowser.get(using='chrome').open(f"https://www.youtube.com/results?search_query={query}")
 
     def _load_sites(self, config_file: str="sites.json"):
+        if not os.path.exists(config_file):
+            with open(config_file, "w", encoding="utf-8") as file:
+                dump({}, file, separators=(",\n", ": "))
         with open(config_file, "r", encoding="utf-8") as file:
             sites = load(file)
             print("сайты загружены!", sites)

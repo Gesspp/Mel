@@ -220,6 +220,8 @@ main{
 .topics{
     display: flex;
     flex-direction: column;
+    position: fixed;
+    left: 20px;
 }
 
 .sound-topic, .programs-topic, .sites-topic, .scommands-topic{
@@ -248,13 +250,55 @@ main{
     padding: 5px 10px;
 }
 
-.settings-programs-item:hover, .settings-sites-item:hover{
+.supercommands{
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-scommands-list{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.add-scommand > button{
+    background-color: #00adb5;
+    color: #eeeeee;
+    border-width: 0;
+    border-color: #eeeeee;
+    border-radius: 5px;
+    box-shadow: 0 0 5px black;
+    padding: 5px 10px;
+    color: #222831;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+
+.settings-scommands-item{
+    transition: 0.5s;
+    transform: scale3d(1, 1, 1);
+    background-color: #00adb5;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-width: 1px;
+    border-color: #eeeeee;
+    border-radius: 10px;
+    box-shadow: 0 0 5px black;
+    padding: 5px 10px;
+}
+
+.settings-programs-item:hover, .settings-sites-item:hover, .settings-scommands-item:hover{
     transition: 0.5s;
     transform: scale3d(1.05, 1.05, 1.05);
     background-color: #008e96;
 }
 
-.program-name, .site-name{
+.program-name, .site-name, .scommand-name{
     color:#222831;
     font-weight: 600;
 }
@@ -267,6 +311,12 @@ main{
     display: flex;
     flex-direction: row;
     gap: 10px;
+}
+
+a, a:link, a:visited, a:hover, a:active{
+    text-decoration: none;
+    color: #eeeeee;
+    cursor: pointer;
 }
 
 h1, h2{
@@ -288,7 +338,7 @@ h1, h2{
     margin-top: 10px;
 }
 
-.add-program-modal, .add-site-modal{
+.add-program-modal, .add-site-modal, .add-scommand-modal{
     position: fixed;
     top: 50%;
     left: 50%;
@@ -303,8 +353,27 @@ h1, h2{
     align-items: center;
     justify-content: space-around;
 }
+.add-scommand-modal{
+    height: auto !important;
+}
 
-.new-program-name{
+.add-new-subcommand{
+    background-color: #00adb5;
+    color: #eeeeee;
+    border-width: 0;
+    border-color: #eeeeee;
+    border-radius: 5px;
+    box-shadow: 0 0 5px black;
+    padding: 5px 10px;
+    color: #222831;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.5s;
+    margin-top: 10px;
+}
+
+
+.styled-input{
     width: 300px;
     height: 30px;
     border-radius: 5px;
@@ -314,9 +383,36 @@ h1, h2{
     margin-top: 10px;
     padding-left: 10px;
     font-size: 16px;
-    color: #4d5a6e
-
+    color: #4d5a6e;
+    outline: none;
 }
+
+.new-program-path{
+    width: 263px;
+    height: 30px;
+    border-radius: 5px;
+    border-width: 0;
+    border-color: #222831;
+    box-shadow: 0 0 5px black;
+    padding-left: 10px;
+    font-size: 16px;
+    color: #4d5a6e
+}
+
+.URL_input{
+    width: 300px;
+    height: 30px;
+    border-radius: 5px;
+    border-width: 0;
+    border-color: #222831;
+    box-shadow: 0 0 5px black;
+    margin-top: 10px;
+    padding-left: 10px;
+    font-size: 16px;
+    color: #4d5a6e;
+    outline: none;
+}
+
 .path-choose{
     width: 300px;
     height: 30px;
@@ -328,6 +424,79 @@ h1, h2{
     padding-left: 10px;
 }
 
+.path-choose-div{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+
+.folder-icon-space{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #eeeeee;
+    border-radius: 2px;
+    width: 30px;
+    height: 30px;
+}
+
+.add-new-program, .edit-program, .add-new-site, .add-new-subcommand, .add-new-scommand, .edit-site{
+    background-color: #00adb5;
+    color: #eeeeee;
+    border-width: 0;
+    border-color: #eeeeee;
+    border-radius: 5px;
+    box-shadow: 0 0 5px black;
+    padding: 5px 10px;
+    color: #222831;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.5s;
+    margin-top: 10px;
+    
+}
+
+.delete-subcommand{
+    color:white;
+    cursor: pointer;
+}
+
+.subcommand-item{
+    width: 310px;
+    height: 30px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 5px;
+    font-weight: 600;
+}
+
+.subcommand-select, .program-select, .site-select{
+    width: 140px;
+    height: 100%;
+    border-radius: 5px;
+    outline: none;
+    box-sizing: border-box;
+    font-weight: 600;
+}
+
+.subcommand-entry{
+    width: 140px;
+    height: 100%;
+    border-radius: 5px;
+    outline: none;
+    box-sizing: border-box;
+    font-weight: 600;
+}
+
+.open-folder-icon{
+    width: 20px;
+    cursor: pointer;
+}
+
 .close-modal{
     color: #eeeeee;
     width: 90%;
@@ -337,4 +506,23 @@ h1, h2{
 }
 .close-modal-button{
     cursor: pointer;
+}
+.subcommands{
+    display: flex;
+    flex-direction: column;
+}                                                                                                                                                                                         
+
+.edit-scommand{
+    background-color: #00adb5;
+    color: #eeeeee;
+    border-width: 0;
+    border-color: #eeeeee;
+    border-radius: 5px;
+    box-shadow: 0 0 5px black;
+    padding: 5px 10px;
+    color: #222831;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.5s;
+    margin-top: 10px;
 }
